@@ -1,0 +1,11 @@
+/* SleekMonochromeBrightAccents.css */
+:root {
+    --primary: #2D313F;
+    --secondary: #7A7F8F;
+    --accent: #007BFF;
+    --background: #EAECEF;
+    --text: #191B1F;
+  }
+  
+  /* The utilities for other themes would follow the same pattern as the first theme */
+  

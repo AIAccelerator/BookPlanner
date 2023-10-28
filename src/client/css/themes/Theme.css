@@ -1,0 +1,42 @@
+@import "CoolTealVibrantAccents.css";
+
+/* Background Colors */
+.bg-primary { background-color: var(--primary); }
+.bg-secondary { background-color: var(--secondary); }
+.bg-accent { background-color: var(--accent); }
+.bg-background { background-color: var(--background); }
+.bg-text { background-color: var(--text); }
+
+/* Text Colors */
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-accent { color: var(--accent); }
+.text-background { color: var(--background); }
+.text-text { color: var(--text); }
+
+/* Border Colors */
+.border-primary { border-color: var(--primary); }
+.border-secondary { border-color: var(--secondary); }
+.border-accent { border-color: var(--accent); }
+.border-background { border-color: var(--background); }
+.border-text { border-color: var(--text); }
+
+/* Placeholder Colors (For Inputs and Textareas) */
+::placeholder { color: var(--text); } /* Default placeholder color */
+.placeholder-primary::-webkit-input-placeholder { color: var(--primary); }
+.placeholder-secondary::-webkit-input-placeholder { color: var(--secondary); }
+.placeholder-accent::-webkit-input-placeholder { color: var(--accent); }
+
+/* Gradient Backgrounds (Diagonal Gradients for variety) */
+.bg-gradient-primary { background: linear-gradient(45deg, var(--primary), var(--secondary)); }
+.bg-gradient-accent { background: linear-gradient(45deg, var(--accent), var(--background)); }
+
+/* Button Shadows (Using Box Shadows) */
+.shadow-primary { box-shadow: 0 4px 6px rgba(var(--primary), 0.1), 0 1px 3px rgba(0, 0, 0, 0.1); }
+.shadow-secondary { box-shadow: 0 4px 6px rgba(var(--secondary), 0.1), 0 1px 3px rgba(0, 0, 0, 0.1); }
+.shadow-accent { box-shadow: 0 4px 6px rgba(var(--accent), 0.1), 0 1px 3px rgba(0, 0, 0, 0.1); }
+
+/* Hover State for Background (Darker shade for hover effect) */
+.hover\\:bg-primary:hover { background-color: darken(var(--primary), 10%); }
+.hover\\:bg-secondary:hover { background-color: darken(var(--secondary), 10%); }
+.hover\\:bg-accent:hover { background-color: darken(var(--accent), 10%); }
