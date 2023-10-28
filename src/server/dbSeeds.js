@@ -7,6 +7,7 @@ export const devSeedSimple = async (prismaClient) => {
   const user = await createUser(prismaClient, {
     email: process.env.SEED_USER_EMAIL,
     password: process.env.SEED_USER_PASS,
+    fullName: 'John Doe',
     isEmailVerified: true
   });
 };
