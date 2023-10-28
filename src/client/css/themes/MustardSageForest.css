@@ -1,0 +1,8 @@
+/* MustardSageForest.css */
+:root {
+    --primary: #E3B448;       /* Mustard */
+    --secondary: #CBD18F;     /* Sage */
+    --accent: #3A6B35;        /* Forest Green */
+    --background: #FAFAFC;    /* Default background */
+    --text: #333740;          /* Default text */
+}

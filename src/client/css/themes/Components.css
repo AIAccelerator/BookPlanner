@@ -1,0 +1,79 @@
+/* Components.css */
+
+/* === Buttons === */
+.primary-button {
+    background-color: var(--primary);
+    color: var(--background);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s;
+}
+.primary-button:hover {
+    background-color: darken(var(--primary), 10%);
+}
+
+.secondary-button {
+    background-color: var(--secondary);
+    color: var(--background);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s;
+}
+.secondary-button:hover {
+    background-color: darken(var(--secondary), 10%);
+}
+
+/* === Forms === */
+.input-field {
+    border: 1px solid var(--secondary);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+.input-error {
+    border-color: red;
+    color: red;
+}
+
+.select-dropdown {
+    border: 1px solid var(--secondary);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+/* === Navigation === */
+.top-bar {
+    background-color: var(--primary);
+    padding: 0.5rem 1rem;
+}
+
+.sidebar {
+    background-color: var(--background);
+    height: 100vh;
+    width: 16rem;
+    padding: 1rem;
+}
+
+.breadcrumb a {
+    color: var(--primary);
+    margin-right: 0.5rem;
+}
+.breadcrumb span {
+    margin-right: 0.5rem;
+}
+
+/* === Cards === */
+.card {
+    background-color: var(--background);
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--secondary);
+}
+.card-title {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+.card-content {
+    color: var(--text);
+}
+
+/* Note: Remember to integrate tools like PostCSS and postcss-functions for functionalities like 'darken'. */

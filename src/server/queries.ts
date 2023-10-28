@@ -24,7 +24,13 @@ type PaginationInput = {
   limit: number;
 };
 
-export const getBooks: GetBooks<PaginationInput, Book[]> = async ({ page, limit }, context) => {
+
+type PaginationOutput = {
+  books: Book[];
+  totalBooks: number;
+};
+
+export const getBooks: GetBooks<PaginationInput, PaginationOutput> = async ({ page, limit }, context) => {
   if (!context.user) {
     throw new HttpError(401);  // Unauthorized
   }
@@ -33,8 +39,16 @@ export const getBooks: GetBooks<PaginationInput, Book[]> = async ({ page, limit 
   const skip = (page - 1) * limit;
 
   // Fetch books from the database with pagination
-  return context.entities.Book.findMany({
+  const books = await context.entities.Book.findMany({
     skip,        // Skip the previous pages' items
     take: limit, // Limit the number of items returned
   });
+
+  // Count the total number of books in the database
+  const totalBooks = await context.entities.Book.count();
+
+  return {
+    books,
+    totalBooks
+  };
 };

@@ -1,6 +1,6 @@
 // App.tsx
 
-import './Main.css';
+import './css/Main.css';
 import Header from './Header';  // Import Header component
 import Footer from './Footer';  // Import Footer component
 import { ReactNode } from 'react';
