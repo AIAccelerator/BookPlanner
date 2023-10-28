@@ -6,3 +6,5 @@ fly config/fly-client.toml
 fly config/fly-server.toml
 fly-client.toml
 fly-server.toml
+/.vscode
+/.node_modules

@@ -40,7 +40,8 @@ app book_planner {
   db: { 
     system: PostgreSQL,
     seeds: [
-      import { devSeedSimple } from "@server/dbSeeds.js"
+      import { devSeedSimple } from "@server/dbSeeds.js",
+      import { devSeedBooks } from "@server/dbSeeds.js",
     ]
   },
   client: {
@@ -114,7 +115,7 @@ psl=}
 
 entity Chapter {=psl
   id             Int      @id @default(autoincrement())
-  number         Int      @unique
+  number         Int      @default(1)
   title          String
   description    String
   createdAt      DateTime @default(now())
