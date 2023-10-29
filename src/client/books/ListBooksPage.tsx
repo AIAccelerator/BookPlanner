@@ -4,9 +4,11 @@ import getBooks from '@wasp/queries/getBooks';
 import { Transition } from '@headlessui/react';
 import Pagination from '../common/Pagination';
 import SidebarModal from '../common/SidebarModal';
-import CreateBookForm from './CreateBookForm';
+import Wizard from '../common/Wizard';
+import CreateBook from './wizzard/CreateBook';
 import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import FilterSortSidebar from './FilterSortSidebar';
+import ListBooks from './ListBooks';
 
 const ListBooksPage: React.FC = () => {
   const [page, setPage] = useState<number>(1);
@@ -22,7 +24,7 @@ const ListBooksPage: React.FC = () => {
   const [isFilterModalOpen, setFilterModalOpen] = useState(false);
   const handleOpenFilterModal = () => setFilterModalOpen(true);
   const handleCloseFilterModal = () => setFilterModalOpen(false);
-    const handleSearch = (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
     setPage(1); // Reset page to 1 when a new search is executed
   }
@@ -41,6 +43,12 @@ const ListBooksPage: React.FC = () => {
   const clearSearch = () => {
     setSearchTerm('');
   };
+
+  const handleWizardComplete = (data: any) => {
+    console.log(data);
+    // Handle the form   data here, e.g., make API calls.
+  };
+
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen bg-background"><div className="loader"></div></div>;
@@ -65,7 +73,11 @@ const ListBooksPage: React.FC = () => {
           onClose={handleCloseModal} 
           title="Create a New Book"
         >
-          {isModalOpen && <CreateBookForm />}
+          {isModalOpen && 
+          <Wizard onSubmit={handleWizardComplete}>
+            <CreateBook />
+          </Wizard>
+          }
         </SidebarModal>
         {/* Modal for Filter & Sort */}
         <SidebarModal 
@@ -108,23 +120,7 @@ const ListBooksPage: React.FC = () => {
         <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
       
-      {/* Book List */}
-      <Transition
-        as="div"
-        className="bg-white p-6 rounded-lg shadow-lg"
-        show={true}
-        enter="transition-opacity duration-300"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-      >
-        {data?.books && data.books.map(book => (
-          <div key={book.id} className="mb-6 border-b pb-4 hover:bg-secondary transition-colors duration-200">
-            <h2 className="text-2xl font-semibold mb-2 text-primary">{book.title}</h2>
-            <p className="text-lg text-text">Author: {book.author}</p>
-            <p className="text-sm text-text">Date Created: {formatDate(book.createdAt)}</p>
-          </div>
-        ))}
-      </Transition>
+      <ListBooks books={data?.books} />
       
       {/* Pagination Controls */}
       <div className="mb-8 flex justify-center">
@@ -136,3 +132,4 @@ const ListBooksPage: React.FC = () => {
 };
 
 export default ListBooksPage;
+
