@@ -9,6 +9,8 @@ import CreateBook from './wizzard/CreateBook';
 import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import FilterSortSidebar from './FilterSortSidebar';
 import ListBooks from './ListBooks';
+import CreateChapter from './wizzard/CreateChapter';
+import Review from './wizzard/Review';
 
 const ListBooksPage: React.FC = () => {
   const [page, setPage] = useState<number>(1);
@@ -68,34 +70,6 @@ const ListBooksPage: React.FC = () => {
         >
           Create New Book
         </button>
-        <SidebarModal 
-          isOpen={isModalOpen} 
-          onClose={handleCloseModal} 
-          title="Create a New Book"
-        >
-          {isModalOpen && 
-          <Wizard onSubmit={handleWizardComplete}>
-            <CreateBook />
-          </Wizard>
-          }
-        </SidebarModal>
-        {/* Modal for Filter & Sort */}
-        <SidebarModal 
-            isOpen={isFilterModalOpen} 
-            onClose={handleCloseFilterModal} 
-            title="Filter & Sort"
-        >
-            {isFilterModalOpen && (
-                <FilterSortSidebar 
-                    searchTerm={searchTerm}
-                    sortDirection={sortDirection as 'ASC' | 'DESC'}
-                    onSearchTermChange={setSearchTerm}
-                    onSortDirectionChange={toggleSortDirection}
-                />
-
-            )}
-        </SidebarModal>
-
       </div>
       <div className="flex justify-between items-center mb-4">
         <span className="text-lg text-text">Total Books: {data?.totalBooks}</span>
@@ -126,7 +100,38 @@ const ListBooksPage: React.FC = () => {
       <div className="mb-8 flex justify-center">
         <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
-      
+      <SidebarModal 
+          isOpen={isModalOpen} 
+          onClose={handleCloseModal} 
+          title="Create a New Book"
+        >
+          {isModalOpen && 
+          <>
+            <div className="text-center mb-4">Please follow the steps to create a new book and its chapters.</div>
+            <div className="text-center mb-4">Please follow the steps to create a new book and its chapters.</div>
+            <Wizard onSubmit={handleWizardComplete}>
+                <CreateBook />                
+                <Review />
+            </Wizard>         
+          </>
+          }
+        </SidebarModal>
+        {/* Modal for Filter & Sort */}
+        <SidebarModal 
+            isOpen={isFilterModalOpen} 
+            onClose={handleCloseFilterModal} 
+            title="Filter & Sort"
+        >
+            {isFilterModalOpen && (
+                <FilterSortSidebar 
+                    searchTerm={searchTerm}
+                    sortDirection={sortDirection as 'ASC' | 'DESC'}
+                    onSearchTermChange={setSearchTerm}
+                    onSortDirectionChange={toggleSortDirection}
+                />
+
+            )}
+        </SidebarModal>
     </div>
   );
 };

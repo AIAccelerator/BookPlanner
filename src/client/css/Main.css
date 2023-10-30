@@ -1,8 +1,9 @@
+@import "themes/Theme.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import "themes/Theme.css";
 
 a {
   color: rgb(79 70 229 / var(--tw-text-opacity));

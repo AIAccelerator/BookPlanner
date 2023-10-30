@@ -76,4 +76,43 @@
     color: var(--text);
 }
 
-/* Note: Remember to integrate tools like PostCSS and postcss-functions for functionalities like 'darken'. */
+
+/** Progress Bar **/
+/* Container */
+.progress-bar-container {
+    @apply w-full relative rounded-full overflow-hidden bg-secondary;
+    height: 1.5rem; /* Doubled the height */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Progress Indicator for filled part */
+.progress-bar {
+    @apply absolute top-0 left-0 h-full bg-primary rounded-full; /* Replaced gradient with primary color */
+    min-width: 10%; 
+}
+
+/* Animated stripes for unfilled part */
+@keyframes striped {
+    0% { background-position: 1rem 0; }
+    100% { background-position: 0 0; }
+}
+
+.progress-bar-container:not(.progress-bar) {
+    background-image: linear-gradient(
+      45deg, 
+      rgba(255, 255, 255, 0.15) 25%, 
+      transparent 25%, 
+      transparent 50%, 
+      rgba(255, 255, 255, 0.15) 50%, 
+      rgba(255, 255, 255, 0.15) 75%, 
+      transparent 75%, 
+      transparent
+    );
+    animation: striped 1s linear infinite;
+    background-size: 1rem 1rem;
+}
+
+/* Progress Label */
+.progress-bar span {
+    @apply inset-0 flex items-center justify-center text-white font-medium;
+}
