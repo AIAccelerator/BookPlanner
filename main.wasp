@@ -226,13 +226,6 @@ action createChapter {
   entities: [User, Chapter]
 }
 
-page CreateChapterPage {
-  component: import CreateChapterPage from "@client/books/CreateChapterPage",
-  authRequired: true
-}
-
-route CreateChapterRoute { path: "/create-chapter", to: CreateChapterPage }
-
 page ListBooksPage {
   component: import ListBooksPage from "@client/books/ListBooksPage",
   authRequired: true
