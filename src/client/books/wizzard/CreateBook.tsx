@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { WizardContext } from '../../common/WizardContext';
 import Step from '../../common/Step'; // Ensure you import Step
+import { WizardContext } from '../../common/WizardContext'; // Ensure you import WizardContext
 
 const CreateBook = () => {
   const { updateFormData, setValidators, formErrors, setFormErrors } = useContext(WizardContext);
@@ -29,6 +29,7 @@ const CreateBook = () => {
     }
   };
   
+  return (
     <Step onNext={handleNext}>
         <form onSubmit={handleNext} className="bg-background shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
@@ -66,7 +67,7 @@ const CreateBook = () => {
           
           {error && <div className="bg-red-100 text-red-700 p-4 rounded mt-4">{error}</div>}      
       </Step>
-  ;
+  );
 };
 
 export default CreateBook;

@@ -17,7 +17,6 @@ const CreateBookPage: React.FC = () => {
       <WizardProvider initialData={{}} totalSteps={3}>
         <Wizard onSubmit={handleWizardComplete}>
           <CreateBook />
-          <CreateChapter />
           <Review />
         </Wizard>
       </WizardProvider>
