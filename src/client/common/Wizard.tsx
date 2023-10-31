@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Transition } from '@headlessui/react';
 import ProgressBar from './ProgressBar';
+import { WizardProvider } from "./WizardContext";
 
 interface WizardProps {
   children: React.ReactElement[];
@@ -39,6 +40,7 @@ const Wizard: React.FC<WizardProps> = ({ children, onSubmit }) => {
   };
 
   return (
+    <WizardProvider initialData={{}} totalSteps={totalSteps}>
     <div className="flex">
       <aside className="w-full h-full bg-background p-4 fixed right-0 top-0 overflow-y-auto">
       <h1 className="text-2xl font-bold mb-5 text-primary">Book Wizard</h1>
@@ -66,7 +68,7 @@ const Wizard: React.FC<WizardProps> = ({ children, onSubmit }) => {
         </div>
       </aside>
     </div>
-
+    </WizardProvider>
   );
 };
 

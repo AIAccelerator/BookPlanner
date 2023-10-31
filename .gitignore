@@ -8,3 +8,4 @@ fly-client.toml
 fly-server.toml
 /.vscode
 node_modules
+.aider*

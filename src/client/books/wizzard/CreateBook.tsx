@@ -1,50 +1,34 @@
-import React, { useState } from 'react';
-import createBook from '@wasp/actions/createBook';
-import useAuth from '@wasp/auth/useAuth';
-import Step, { CommonStepProps } from '../../common/Step';
+import React, { useState, useContext, useEffect } from 'react';
+import { WizardContext } from '../../common/WizardContext';
+import Step from '../../common/Step'; // Ensure you import Step
 
-const CreateBook: React.FC<CommonStepProps> = ({ onNext }) => {
+const CreateBook = () => {
+  const { updateFormData, setValidators, formErrors, setFormErrors } = useContext(WizardContext);
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
-  const [titleError, setTitleError] = useState('');
-  const [authorError, setAuthorError] = useState('');
-  const [error, setError] = useState(null);
-  const { data: user } = useAuth();
+  const [titleError, setTitleError] = useState<string | null>(null);
+  const [authorError, setAuthorError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const user = { fullName: 'Your Name' }; // Replace this with your actual user object
 
-  const validateTitle = () => {
-    if (!title.trim()) {
-      setTitleError('Title is required.');
-      return false;
-    }
-    setTitleError('');
-    return true;
-  };
+  useEffect(() => {
+    setValidators([
+      { field: 'title', validate: (value: any) => value ? null : 'Title is required' },
+      { field: 'author', validate: (value: any) => value ? null : 'Author is required' },
+    ]);
+  }, []);
 
-  const validateAuthor = () => {
-    if (!author.trim()) {
-      setAuthorError('Author is required.');
-      return false;
-    }
-    setAuthorError('');
-    return true;
-  };
-
-  const handleNext = async (e) => {
+  const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
-    const isTitleValid = validateTitle();
-    const isAuthorValid = validateAuthor();
-    if (isTitleValid && isAuthorValid) {
-      try {
-        await createBook({ title, author });
-        onNext({ title, author });
-      } catch (err) {
-        setError(err.message);
-      }      
+
+    if (title && author) {
+      updateFormData({ title, author });
+    } else {
+      setError('Both title and author are required.');
     }
   };
 
-  return (
-      <Step onNext={handleNext}>
+    <Step onNext={handleNext}>
         <form onSubmit={handleNext} className="bg-background shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
             <label htmlFor="title" className="block text-text text-sm font-bold mb-2">Title:</label>
@@ -54,8 +38,9 @@ const CreateBook: React.FC<CommonStepProps> = ({ onNext }) => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="shadow appearance-none border border-primary rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
-            />
-            {titleError && <p className="text-accent text-xs mt-1">{titleError}</p>}
+            />            
+            {formErrors.title && <span className="text-accent text-xs mt-1">{formErrors.title}</span>}
+
           </div>
           <div className="mb-4">
             <label htmlFor="author" className="block text-text text-sm font-bold mb-2">Author:</label>
@@ -72,14 +57,13 @@ const CreateBook: React.FC<CommonStepProps> = ({ onNext }) => {
               onClick={(e) => { e.preventDefault(); setAuthor(user?.fullName); }}
             >
               Use my name ({user?.fullName}) as the author
-            </a>
-            {authorError && <p className="text-accent text-xs mt-1">{authorError}</p>}
+            </a>            
+            {formErrors.author && <span className="text-accent text-xs mt-1">{formErrors.author}</span>}
+
           </div>
         </form>
           
           {error && <div className="bg-red-100 text-red-700 p-4 rounded mt-4">{error}</div>}      
       </Step>
-  );
+  ;
 };
-
-export default CreateBook;
