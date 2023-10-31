@@ -20,14 +20,15 @@ const CreateBook = () => {
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (title && author) {
       updateFormData({ title, author });
+      setError(null);  // Clear the error state when both fields are filled
     } else {
       setError('Both title and author are required.');
     }
   };
-
+  
     <Step onNext={handleNext}>
         <form onSubmit={handleNext} className="bg-background shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="mb-4">
@@ -67,3 +68,5 @@ const CreateBook = () => {
       </Step>
   ;
 };
+
+export default CreateBook;
