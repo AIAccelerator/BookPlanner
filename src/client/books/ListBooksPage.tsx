@@ -5,12 +5,12 @@ import { Transition } from '@headlessui/react';
 import Pagination from '../common/Pagination';
 import SidebarModal from '../common/SidebarModal';
 import Wizard from '../common/Wizard';
-import CreateBook from './wizzard/CreateBook';
+import CreateBook from './wizard/CreateBook';
 import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import FilterSortSidebar from './FilterSortSidebar';
 import ListBooks from './ListBooks';
-import CreateChapter from './wizzard/CreateChapter';
-import Review from './wizzard/Review';
+import CreateChapter from './wizard/CreateChapter';
+import Review from './wizard/Review';
 
 const ListBooksPage: React.FC = () => {
   const [page, setPage] = useState<number>(1);
@@ -109,10 +109,7 @@ const ListBooksPage: React.FC = () => {
           <>
             <div className="text-center mb-4">Please follow the steps to create a new book and its chapters.</div>
             <div className="text-center mb-4">Please follow the steps to create a new book and its chapters.</div>
-            <Wizard onSubmit={handleWizardComplete}>
-                <CreateBook />                
-                <Review />
-            </Wizard>         
+               
           </>
           }
         </SidebarModal>

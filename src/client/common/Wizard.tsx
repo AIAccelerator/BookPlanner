@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Transition } from '@headlessui/react';
 import ProgressBar from './ProgressBar';
-import { WizardProvider } from "./WizardContext";
 
 interface WizardProps {
   children: React.ReactElement[];
