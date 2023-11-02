@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler, FormProvider, useFormContext } from 'react-hook-form';
 import CreateBookStep from './wizard/CreateBookStep';
 import CreateChapterStep from './wizard/CreateChapterStep';
+import CreateSubChapterStep from './wizard/CreateSubChapterStep';
 import ReviewStep from './wizard/ReviewStep';
 import ProgressBar from '../common/ProgressBar';
 import useAuth from '@wasp/auth/useAuth';
@@ -28,6 +29,7 @@ const CreateBookPage: React.FC = () => {
   const childSteps = [
     <CreateBookStep assignSelfAsAuthor={assignSelfAsAuthor} />,
     <CreateChapterStep />,
+    <CreateSubChapterStep />,
     <ReviewStep />,
     // Assuming there are other steps, they would be listed here.
   ];

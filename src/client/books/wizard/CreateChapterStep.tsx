@@ -33,6 +33,9 @@ const CreateChapterStep: React.FC = () => {
       }
     }, [setValue, getValues]);
 
+
+// ...
+
     return (
         <div>
             <h2 className="text-primary mb-4">Add Chapters</h2>
