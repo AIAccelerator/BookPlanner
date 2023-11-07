@@ -1,10 +1,11 @@
 import fetch from 'node-fetch';
 import HttpError from '@wasp/core/HttpError.js';
-import type { RelatedObject } from '@wasp/entities';
+import { Tag, type RelatedObject } from '@wasp/entities';
 import type { GenerateGptResponse, StripePayment } from '@wasp/actions/types';
 import type { StripePaymentResult, OpenAIResponse } from './types';
 import Stripe from 'stripe';
 import { type } from 'os';
+import multer from 'multer';
 
 const stripe = new Stripe(process.env.STRIPE_KEY!, {
   apiVersion: '2022-11-15',
@@ -197,4 +198,43 @@ export const createChapter = async (args: CreateChapterArgs, context) => {
   });
   
   return chapter;
+};
+
+type TagInput = {
+  name: string;
+};
+
+type CreateResourceArgs = {
+  title: string;
+  description: string;
+  type: string;
+  url?: string;
+  tags: TagInput[];
+};
+
+// Function to create a resource and associated tags
+export const createResource = async (args: CreateResourceArgs, context) => {
+  const { title, description, type, url, tags } = args;
+
+  const newResource = await context.entities.Resource.create({
+    data: {
+      title,
+      description,
+      type,
+      url,
+      user: { connect: { id: context.user.id } }, // Connect the resource to the user
+      // Use connectOrCreate for each tag to either connect it if it exists or create it if it doesn't
+      tags: {
+        connectOrCreate: tags.map(tag => ({
+          where: { name: tag.name },
+          create: { name: tag.name },
+        })),
+      },
+    },
+    include: {
+      tags: true, // Include tags in the returned object
+    },
+  });
+
+  return newResource;
 };

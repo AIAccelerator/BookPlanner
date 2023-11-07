@@ -2,7 +2,9 @@ import HttpError from '@wasp/core/HttpError.js';
 import type { RelatedObject } from '@wasp/entities';
 import type { GetRelatedObjects } from '@wasp/queries/types';
 import type { Book } from '@wasp/entities';
+import type { Resource } from '@wasp/entities';
 import type { GetBooks } from '@wasp/queries/types';
+import type { GetResources } from '@wasp/queries/types';
 
 
 export const getRelatedObjects: GetRelatedObjects<void, RelatedObject[]> = async (args, context) => {
@@ -70,3 +72,62 @@ export const getBooks: GetBooks<GetBooksInput, GetBooksOutput> = async ({ page, 
     totalBooks
   };
 };
+
+type GetResourcesInput = {
+  page: number;
+  limit: number;
+  sort?: 'asc' | 'desc';
+  searchTerm?: string;
+};
+
+type GetResourcesOutput = {
+  resources: Resource[];
+  totalResources: number;
+};
+
+export const getResources: GetRelatedObjects<GetResourcesInput, GetResourcesOutput> = async ({ page, limit, sort = 'desc', searchTerm = '' }, context) => {
+  if (!context.user) {
+    throw new HttpError(401, 'Unauthorized'); // User must be logged in to view resources
+  }
+
+  // Calculate the offset (i.e., how many items to skip) based on the page and limit
+  const skip = (page - 1) * limit;
+
+  // Fetch resources from the database with pagination, sorting, and search
+  const resources = await context.entities.Resource.findMany({
+    skip,        
+    take: limit,
+    orderBy: { createdAt: sort },
+    where: {
+      userId: context.user.id,
+      AND: [
+        { title: { contains: searchTerm, mode: 'insensitive' } },
+        { description: { contains: searchTerm, mode: 'insensitive' } },
+        { tags: { some: { title: { contains: searchTerm, mode: 'insensitive' } } } },
+        // Add additional search fields if necessary
+      ],
+    },
+    include: {
+      tags: true, // Include related tags in the result
+    },
+  });
+
+  // Count the total number of resources in the database based on the search term
+  const totalResources = await context.entities.Resource.count({
+    where: {
+      userId: context.user.id,
+      AND: [
+        { title: { contains: searchTerm, mode: 'insensitive' } },
+        { description: { contains: searchTerm, mode: 'insensitive' } },
+        { tags: { some: { title: { contains: searchTerm, mode: 'insensitive' } } } },
+        // Add additional search fields if necessary
+      ],
+    }
+  });
+
+  return {
+    resources,
+    totalResources
+  };
+};
+

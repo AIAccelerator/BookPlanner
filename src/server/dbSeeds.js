@@ -39,6 +39,40 @@ export const devSeedBooks = async (prismaClient) => {
   }
 };
 
+
+// The seeder function to create resources with random tags
+export const devSeedResources = async (prismaClient) => {
+  const user = await prismaClient.user.findUnique({
+    where: {
+      email: process.env.SEED_USER_EMAIL,
+    },
+  });
+
+  if (!user) {
+    console.error('User not found');
+    return;
+  }
+
+  const firstTags = [faker.lorem.word(), faker.lorem.word(), faker.lorem.word()];
+  const secondTags = [faker.lorem.word(), faker.lorem.word(), faker.lorem.word()];
+  // Create 50 resources
+  for (let i = 0; i < 50; i++) {
+    const resourceData = {
+      title: faker.commerce.productName(),
+      description: faker.lorem.paragraph(),
+      type: faker.helpers.arrayElement(['url', 'pdf', 'doc', 'text', 'google_search']),
+      url: faker.internet.url(),
+      tags: [
+        { name: faker.helpers.arrayElement(firstTags)  },
+        { name: faker.helpers.arrayElement(secondTags)  },
+      ],
+      userId: user.id,
+    };
+
+    await createResource(prismaClient, resourceData, user.id);
+  }
+};
+
 async function createBooks(prismaClient, data) {
   const { title, author, userId } = data;  // Destructure the data argument to get the title, author, and userId values
 
@@ -69,6 +103,33 @@ async function createBooks(prismaClient, data) {
       }
     });
   }
+
+  return newBook;
+}
+
+
+async function createResource(prismaClient, data) {
+ 
+  const { title, description, type, url, tags, userId } = data;
+  const newBook = await prismaClient.resource.create({
+    data: {
+      title,
+      description,
+      type,
+      url,
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
+      tags: {
+        connectOrCreate: tags.map(tag => ({
+          where: { name: tag.name },
+          create: { name: tag.name },
+        })),
+      },
+    }
+  });
 
   return newBook;
 }
