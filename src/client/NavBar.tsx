@@ -26,12 +26,9 @@ export default function NavBar() {
                 <div className='hidden sm:ml-6 sm:flex sm:space-x-8'>
                   <a href='/' className={current === '/' ? active : inactive}>
                     Landing Page
-                  </a>
-                  <a href='/pricing' className={current.includes('pricing') ? active : inactive}>
-                    Pricing
-                  </a>
-                  <a href='/gpt' className={current.includes('gpt') ? active : inactive}>
-                    GPT
+                  </a>                 
+                  <a href='/research' className={current.includes('gpt') ? active : inactive}>
+                    Research
                   </a>
                   {!!user && <a href='/books' className={current.includes('books') ? active : inactive}>
                     Books                  
