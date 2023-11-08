@@ -1,23 +1,28 @@
 import React from 'react';
 import { GlobeAltIcon, LinkIcon, DocumentIcon, DocumentTextIcon, TrashIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
-const resources = [
-  {
-    id: 1,
-    icon: GlobeAltIcon,
-    title: 'Source 1',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod eros in enim.',
-    tag: 'Google',
-  },
-  {
-    id: 2,
-    icon: DocumentIcon,
-    title: 'Source 2',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod eros in enim.',
-    tag: 'Upload',
-  },
-  // ... additional resources
-];
+import { useEffect, useState } from 'react';
+
+// Assuming you have a function to call the API, e.g., fetchResources
+import { fetchResources } from '../../api'; // You need to create this API call function
+
+const ResourcesList: React.FC = () => {
+  const [resources, setResources] = useState([]);
+
+  useEffect(() => {
+    const loadResources = async () => {
+      try {
+        const response = await fetchResources(); // This function should call '/api/getResources' endpoint
+        setResources(response.resources);
+      } catch (error) {
+        console.error('Failed to load resources:', error);
+      }
+    };
+
+    loadResources();
+  }, []);
+
+  // ... rest of the component
 
 const ResourcesList: React.FC = () => {
   const handleRemove = (resourceId: number) => {
