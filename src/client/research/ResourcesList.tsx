@@ -4,23 +4,20 @@ import { GlobeAltIcon, LinkIcon, DocumentIcon, DocumentTextIcon, TrashIcon, Chev
 import { useEffect, useState } from 'react';
 
 // Assuming you have a function to call the API, e.g., fetchResources
-import { fetchResources } from '../../api'; // You need to create this API call function
+import { useQuery } from '@wasp/queries';
 
 const ResourcesList: React.FC = () => {
   const [resources, setResources] = useState([]);
 
-  useEffect(() => {
-    const loadResources = async () => {
-      try {
-        const response = await fetchResources(); // This function should call '/api/getResources' endpoint
-        setResources(response.resources);
-      } catch (error) {
-        console.error('Failed to load resources:', error);
-      }
-    };
+  const { data, error } = useQuery(getResources);
 
-    loadResources();
-  }, []);
+  useEffect(() => {
+    if (data) {
+      setResources(data);
+    } else if (error) {
+      console.error('Failed to load resources:', error);
+    }
+  }, [data, error]);
 
   // ... rest of the component
 
