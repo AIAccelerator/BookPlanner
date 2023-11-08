@@ -212,8 +212,33 @@ type CreateResourceArgs = {
   tags: TagInput[];
 };
 
-// Function to create a resource and associated tags
-export const createResource = async (args: CreateResourceArgs, context) => {
+// Action to create a URL resource
+export const createUrlResource = async (args: CreateUrlResourceArgs, context) => {
+  const { url, title, description, userId } = args;
+
+  // Ensure the user is logged in
+  if (!context.user) {
+    throw new HttpError(401, 'User not logged in');
+  }
+
+  // Ensure the logged-in user is the one creating the resource
+  if (context.user.id !== userId) {
+    throw new HttpError(403, 'User does not have permission to create resource for another user');
+  }
+
+  // Create the new resource
+  const newResource = await context.entities.Resource.create({
+    data: {
+      url,
+      title,
+      description,
+      type: 'url', // Assuming 'url' is one of the valid types for Resource
+      user: { connect: { id: userId } },
+    },
+  });
+
+  return newResource;
+};
 
 // ... (existing code for createResource)
 

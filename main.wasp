@@ -225,6 +225,12 @@ page CheckoutPage {
  * https://wasp-lang.dev/docs/data-model/operations/overview
  */
 
+api createUrlResource {
+  fn: import { createUrlResource } from "@server/actions.js",
+  entities: [User, Resource],
+  httpRoute: (POST, "/api/createUrlResource")
+}
+
 // 📝 Actions aka Mutations
 
 action generateGptResponse {
