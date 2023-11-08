@@ -2,17 +2,39 @@ import React, { useState } from 'react';
 
 const Text: React.FC = () => {
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [type, setType] = useState(''); // You can set a default type if needed
+  const [description, setDescription] = useState(text);
+  const [type, setType] = useState('text'); // Default type set to 'text'
 
   const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // Here you would handle the submission of the text, e.g., sending it to a server or processing it further.
-    console.log('Submitted text:', text);
+    try {
+      const response = await fetch('/api/createResource', { // Replace with your actual API endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Include any other headers like authorization if needed
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          type,
+          // Include any other fields required by the createResource action
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log('Resource created:', data);
+      // Handle success, e.g., clear the form or show a success message
+    } catch (error) {
+      console.error('Error creating resource:', error);
+      // Handle error, e.g., show an error message
+    }
   };
 
   return (
