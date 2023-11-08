@@ -13,10 +13,32 @@ export default URL;import React, { useState } from 'react';
 const URL: React.FC = () => {
   const [url, setUrl] = useState('');
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log('URL submitted:', url);
-    // Here you can handle the URL, e.g., save it to a database or send it to an API
+    try {
+      const response = await fetch('/api/createUrlResource', { // Replace with your actual API endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Include any other headers like authorization if needed
+        },
+        body: JSON.stringify({
+          url,
+          title: 'Default Title', // You might want to include a field to set this
+          description: 'Default Description', // You might want to include a field to set this
+          // Include any other fields required by the createUrlResource action
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log('URL resource created:', data);
+      // Handle success, e.g., clear the form or show a success message
+    } catch (error) {
+      console.error('Error creating URL resource:', error);
+      // Handle error, e.g., show an error message
+    }
   };
 
   return (
