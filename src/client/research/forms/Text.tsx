@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 
 const Text: React.FC = () => {
-  const [text, setText] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [type, setType] = useState(''); // You can set a default type if needed
 
   const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
