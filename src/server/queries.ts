@@ -38,6 +38,54 @@ export const getBooks: GetBooks<GetBooksInput, GetBooksOutput> = async ({ page, 
     throw new HttpError(401);  // Unauthorized
   }
 
+type GetResourcesInput = {
+  page: number;
+  limit: number;
+  sort?: string;
+  searchTerm?: string;
+};
+
+type GetResourcesOutput = {
+  resources: Resource[];
+  totalResources: number;
+};
+
+export const getResources: GetResources<GetResourcesInput, GetResourcesOutput> = async ({ page, limit, sort = 'DESC', searchTerm = '' }, context) => {
+  if (!context.user) {
+    throw new HttpError(401);  // Unauthorized
+  }
+
+  const skip = (page - 1) * limit;
+
+  const resources = await context.entities.Resource.findMany({
+    skip,
+    take: limit,
+    orderBy: { ...{ createdAt: sort === 'DESC' ? 'desc' : 'asc' }},
+    where: {
+      OR: [
+        { title: { contains: searchTerm, mode: 'insensitive' } },
+        { description: { contains: searchTerm, mode: 'insensitive' } },
+        // Add more search conditions if needed
+      ]
+    }
+  });
+
+  const totalResources = await context.entities.Resource.count({
+    where: {
+      OR: [
+        { title: { contains: searchTerm, mode: 'insensitive' } },
+        { description: { contains: searchTerm, mode: 'insensitive' } },
+        // Add more search conditions if needed
+      ]
+    }
+  });
+
+  return {
+    resources,
+    totalResources
+  };
+};
+
   // Calculate the offset (i.e., how many items to skip) based on the page and limit
   const skip = (page - 1) * limit;
 
