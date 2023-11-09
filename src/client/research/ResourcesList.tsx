@@ -1,7 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GlobeAltIcon, LinkIcon, DocumentIcon, DocumentTextIcon, TrashIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-
-import { useEffect, useState } from 'react';
 
 // Assuming you have a function to call the API, e.g., fetchResources
 import { useQuery } from '@wasp/queries';
