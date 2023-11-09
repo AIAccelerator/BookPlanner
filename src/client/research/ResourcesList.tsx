@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 // Assuming you have a function to call the API, e.g., fetchResources
 import { useQuery } from '@wasp/queries';
 
-const ResourcesList: React.FC = () => {
+// Removed duplicate ResourcesList component declaration
   const [resources, setResources] = useState([]);
 
   const { data, error } = useQuery(getResources);
