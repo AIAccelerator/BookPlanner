@@ -3,11 +3,17 @@ import { GlobeAltIcon, LinkIcon, DocumentIcon, DocumentTextIcon, TrashIcon, Chev
 
 // Assuming you have a function to call the API, e.g., fetchResources
 import { useQuery } from '@wasp/queries';
+import getResources from '@wasp/queries/getResources'
 
-// Removed duplicate ResourcesList component declaration
+  // ... rest of the component
+
+const ResourcesList: React.FC = () => {
+  // Removed duplicate ResourcesList component declaration
   const [resources, setResources] = useState([]);
-
-  const { data, error } = useQuery(getResources);
+  const [page, setPage] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortDirection, setSortDirection] = useState("DESC");
+  const { data, error } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm });
 
   useEffect(() => {
     if (data) {
@@ -17,9 +23,7 @@ import { useQuery } from '@wasp/queries';
     }
   }, [data, error]);
 
-  // ... rest of the component
 
-const ResourcesList: React.FC = () => {
   const handleRemove = (resourceId: number) => {
     // Logic to remove the resource from the list
     console.log(`Remove resource with ID: ${resourceId}`);
@@ -33,7 +37,7 @@ const ResourcesList: React.FC = () => {
           <h2 className="text-2xl font-bold mb-4">Selected Sources</h2>
           {/* Search and filter components here */}
           <div className="grid gap-4">
-            {resources.map((resource) => (
+            {data && data.map((resource) => (
               <div key={resource.id} className="border rounded-lg p-4 flex justify-between items-center">
                 <div>
                   <resource.icon className="w-5 h-5 mr-2 inline-block align-middle" />
