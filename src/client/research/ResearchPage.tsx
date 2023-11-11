@@ -4,8 +4,11 @@ import Filters from './Filters'; // Filters component
 import ResourcesMenu from './ResourcesMenu'; // Dropdown button for adding resources
 import ResourcesList from './ResourcesList';
 
+const [searchTerm, setSearchTerm] = React.useState('');
+
 const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  // Logic to handle search input change
+  setSearchTerm(event.target.value);
+  // Add any additional logic to handle search input change, such as debouncing or API calls
 };
 // import ResourceList from './ResourceList'; // Component for listing resources
 // import Pagination from './Pagination'; // Pagination component
