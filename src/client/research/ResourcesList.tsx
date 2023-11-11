@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@wasp/queries';
 import getResources from '@wasp/queries/getResources';
 import Pagination from '../common/Pagination';
-import { TrashIcon } from '@heroicons/react/24/solid';
+import { TrashIcon, LinkIcon, DocumentTextIcon } from '@heroicons/react/24/solid';
 
 const ResourcesList = ({ searchTerm }) => {
   const [page, setPage] = useState<number>(1);
@@ -30,10 +30,14 @@ const ResourcesList = ({ searchTerm }) => {
         <main className="flex-1 p-6">
           <h2 className="text-2xl font-bold mb-4">Selected Sources</h2>
           <div className="grid gap-4">
-            {data && data.resources.map((resource) => (
-              <div key={resource.id} className="border rounded-lg p-4 flex justify-between items-center">
-                <div>
-                  <h3 className="font-semibold inline-block align-middle">{resource.title}</h3>
+            {data && data.resources.map((resource) => {
+              const Icon = resource.type === 'url' ? LinkIcon : resource.type === 'pdf' ? DocumentTextIcon : null;
+              return (
+                <div key={resource.id} className="border rounded-lg p-4 flex justify-between items-center">
+                  <div className="flex items-center">
+                    {Icon && <Icon className="w-6 h-6 mr-2" />}
+                    <div>
+                      <h3 className="font-semibold inline-block align-middle">{resource.title}</h3>
                   <p className="text-zinc-500 dark:text-zinc-400">{resource.description}</p>
                   <span className="inline-block bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full text-sm mt-2">Tag: {resource.tag}</span>
                 </div>
