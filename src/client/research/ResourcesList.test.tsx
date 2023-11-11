@@ -1,6 +1,3 @@
-import { describe, it, expect, afterEach } from 'vitest';
-import { render, cleanup } from '@testing-library/react';
-
 // Set up the test environment for React
 global.IS_REACT_ACT_ENVIRONMENT = true;
 import ResourcesList from './ResourcesList';
@@ -17,7 +14,6 @@ describe('ResourcesList', () => {
     render(<ResourcesList />);
   });
 });
-import { describe, it, expect, afterEach } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
 import { useQuery } from '@wasp/queries';
 import ResourcesList from './ResourcesList';
