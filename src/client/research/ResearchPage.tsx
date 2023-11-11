@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import SearchInput from './SearchInput'; // Search bar component
 import Filters from './Filters'; // Filters component
 import ResourcesMenu from './ResourcesMenu'; // Dropdown button for adding resources
@@ -9,8 +9,27 @@ import ResourcesList from './ResourcesList';
 const ResourcesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+  // Debounce function
+  const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  };
+
+  // Update the searchTerm state with debouncing
+  const debouncedSetSearchTerm = useCallback(
+    debounce((searchValue) => setSearchTerm(searchValue), 300),
+    []
+  );
+
+  const handleSearchChange = (event) => {
+    debouncedSetSearchTerm(event.target.value);
   };
     return (
     <div className="bg-gray-100 dark:bg-zinc-900 min-h-screen">
