@@ -4,14 +4,8 @@ import getResources from '@wasp/queries/getResources';
 import Pagination from '../common/Pagination';
 import { TrashIcon } from '@heroicons/react/24/solid';
 
-const ResourcesList: React.FC = () => {
+const ResourcesList = ({ searchTerm }) => {
   const [page, setPage] = useState<number>(1);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearchTerm = event.target.value;
-    setSearchTerm(newSearchTerm);
-  };
   const [sortDirection, setSortDirection] = useState("DESC");
   const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm });
 
