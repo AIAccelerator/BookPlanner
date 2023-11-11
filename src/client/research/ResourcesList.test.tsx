@@ -3,7 +3,9 @@ global.IS_REACT_ACT_ENVIRONMENT = true;
 // Removed duplicate import
 
 // Mock the useQuery hook if it's used in the ResourcesList component
-jest.mock('@wasp/queries', () => ({
+import { describe, it, expect, vi } from 'vitest'
+
+vi.mock('@wasp/queries', () => ({
   useQuery: jest.fn(() => ({ data: [], error: null })),
 }));
 
