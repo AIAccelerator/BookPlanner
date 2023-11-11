@@ -1,27 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { GlobeAltIcon, LinkIcon, DocumentIcon, DocumentTextIcon, TrashIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-
-// Assuming you have a function to call the API, e.g., fetchResources
+import React, { useState } from 'react';
 import { useQuery } from '@wasp/queries';
-import getResources from '@wasp/queries/getResources'
-
-  // ... rest of the component
+import getResources from '@wasp/queries/getResources';
+import Pagination from '../common/Pagination';
 
 const ResourcesList: React.FC = () => {
-  // Removed duplicate ResourcesList component declaration
-  const [resources, setResources] = useState([]);
   const [page, setPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortDirection, setSortDirection] = useState("DESC");
-  const { data, error } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm });
+  const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm });
 
-  useEffect(() => {
-    if (data) {
-      setResources(data);
-    } else if (error) {
-      console.error('Failed to load resources:', error);
-    }
-  }, [data, error]);
+  const totalPages = Math.ceil(data?.totalResources / 10);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  return (
+    <>
+      <div>
+        {/* Search and filter components here */}
+      </div>
+      <div>
+        {data && data.resources.map(resource => (
+          // ... render each resource
+        ))}
+      </div>
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+    </>
+  );
+};
 
 
   const handleRemove = (resourceId: number) => {
