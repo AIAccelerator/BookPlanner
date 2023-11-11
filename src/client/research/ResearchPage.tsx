@@ -3,6 +3,10 @@ import SearchInput from './SearchInput'; // Search bar component
 import Filters from './Filters'; // Filters component
 import ResourcesMenu from './ResourcesMenu'; // Dropdown button for adding resources
 import ResourcesList from './ResourcesList';
+
+const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Logic to handle search input change
+};
 // import ResourceList from './ResourceList'; // Component for listing resources
 // import Pagination from './Pagination'; // Pagination component
 
@@ -13,7 +17,7 @@ function ResourcesPage() {
         <header className="mb-6">
           <h1 className="text-3xl font-bold mb-4">Resource Library</h1>
           <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
-            <SearchInput placeholder="Search resources" />
+            <SearchInput placeholder="Search resources" onSearchChange={handleSearchChange} />
             <ResourcesMenu />
           </div>
         </header>
