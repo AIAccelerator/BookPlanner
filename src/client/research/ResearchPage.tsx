@@ -24,7 +24,7 @@ const ResourcesPage: React.FC = () => {
         </header>
         
         <main>
-          <ResourcesList />
+          <ResourcesList searchTerm={searchTerm} />
         </main>
       </div>
     </div>
