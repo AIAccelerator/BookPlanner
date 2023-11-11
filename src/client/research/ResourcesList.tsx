@@ -8,7 +8,7 @@ const ResourcesList: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSearchChange = (event) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
   const [sortDirection, setSortDirection] = useState("DESC");
