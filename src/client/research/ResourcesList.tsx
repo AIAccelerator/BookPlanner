@@ -7,6 +7,10 @@ import { TrashIcon } from '@heroicons/react/24/solid';
 const ResourcesList: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
   const [sortDirection, setSortDirection] = useState("DESC");
   const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm });
 
