@@ -1,11 +1,23 @@
 /* Components.css */
 
+/* Spacing Variables */
+:root {
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem; /* default spacing */
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 2.5rem;
+    --spacing-3xl: 3rem;
+    --spacing-4xl: 4rem;
+}
+
 /* === Buttons === */
 .primary-button {
     background-color: var(--primary);
     color: var(--background);
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--spacing-xs);
     transition: background-color 0.3s;
 }
 .primary-button:hover {
