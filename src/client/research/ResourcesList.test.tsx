@@ -55,8 +55,10 @@ describe('ResourcesList', () => {
       </QueryClientProvider>
     );
 
-    // Wait for the loading state to disappear using queryByText which does not wait
-    expect(queryByText('Loading...')).not.toBeInTheDocument();
+    // Wait for the loading state to disappear using waitFor
+    await waitFor(() => {
+      expect(queryByText('Loading...')).not.toBeInTheDocument();
+    });
 
     // Now that loading is complete, perform your assertions
     expect(getByText('Resource 1')).toBeInTheDocument();
