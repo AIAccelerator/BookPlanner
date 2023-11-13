@@ -8,7 +8,7 @@ interface ResourcesListProps {
   searchTerm: string;
 }
 
-const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm }) => {
+const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm }: ResourcesListProps) => {
   // Assuming your project is set up with TypeScript
   const [page, setPage] = useState(1);
   const [sortDirection, setSortDirection] = useState("DESC");
@@ -31,29 +31,8 @@ const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm }) => {
         <main className="flex-1 p-6">
           <h2 className="text-2xl font-bold mb-4">Selected Sources</h2>
           <div className="grid gap-4">
-            {data && data.resources.map((resource) => (
-              <div key={resource.id} className="border rounded-lg p-4 flex justify-between items-center">
-                <div className="flex items-center">
-                  {resource.type === 'url' ? <LinkIcon className="w-8 h-8 mr-2" /> :
-                   resource.type === 'pdf' ? <DocumentTextIcon className="w-8 h-8 mr-2" /> :
-                   resource.type === 'doc' ? <DocumentIcon className="w-8 h-8 mr-2" /> :
-                   resource.type === 'text' ? <DocumentTextIcon className="w-8 h-8 mr-2" /> :
-                   resource.type === 'google_search' ? <MagnifyingGlassIcon className="w-8 h-8 mr-2" /> :
-                   <DefaultIcon className="w-8 h-8 mr-2" />}
-                  <div>
-                    <h3 className="font-semibold inline-block align-middle">{resource.title}</h3>
-                    <p className="text-zinc-500 dark:text-zinc-400">{resource.description}</p>
-                    <span className="inline-block bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full text-sm mt-2">Tag: {resource.tag}</span>
-                  </div>
-                </div>
-                <button
-                  onClick={() => handleRemove(resource.id)}
-                  className="inline-flex items-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 justify-start"
-                >
-                  <TrashIcon className="w-7 h-7 mr-2" />
-                  Remove
-                </button>
-              </div>
+            {data.resources.map(resource => (
+              <ResourceItem key={resource.id} resource={resource} onRemove={handleRemove} />
             ))}
           </div>
           <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
