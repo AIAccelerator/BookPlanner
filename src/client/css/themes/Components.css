@@ -12,6 +12,94 @@
     --spacing-4xl: 4rem;
 }
 
+/* Box Shadow Variable */
+:root {
+    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* === Buttons === */
+.primary-button {
+    background-color: var(--primary);
+    color: var(--background);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--spacing-xs);
+    transition: background-color 0.3s, transform 0.3s ease;
+}
+
+.primary-button:hover {
+    background-color: darken(var(--primary), 10%);
+    transform: translateY(-2px);
+}
+
+/* === Forms === */
+.input-field {
+    border: 1px solid var(--secondary);
+    padding: var(--spacing-sm);
+    border-radius: var(--spacing-xs);
+}
+.input-error {
+    border-color: red;
+    color: red;
+}
+
+.select-dropdown {
+    border: 1px solid var(--secondary);
+    padding: var(--spacing-sm);
+    border-radius: var(--spacing-xs);
+}
+
+/* === Navigation === */
+.top-bar {
+    background-color: var(--primary);
+    padding: var(--spacing-md);
+}
+
+.sidebar {
+    background-color: var(--background);
+    height: 100vh;
+    width: 16rem;
+    padding: var(--spacing-md);
+}
+
+.breadcrumb a {
+    color: var(--primary);
+    margin-right: var(--spacing-sm);
+}
+.breadcrumb span {
+    margin-right: var(--spacing-sm);
+}
+
+/* === Cards === */
+.card {
+    background-color: var(--background);
+    padding: var(--spacing-md);
+    border-radius: var(--spacing-xs);
+    border: 1px solid var(--secondary);
+    box-shadow: var(--box-shadow);
+}
+.card-title {
+    color: var(--primary);
+    margin-bottom: var(--spacing-sm);
+}
+.card-content {
+    color: var(--text);
+}
+
+/* === Progress Bar === */
+/* ... existing progress bar styles ... */
+
+/* Spacing Variables */
+:root {
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem; /* default spacing */
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 2.5rem;
+    --spacing-3xl: 3rem;
+    --spacing-4xl: 4rem;
+}
+
 /* === Buttons === */
 .primary-button {
     background-color: var(--primary);
