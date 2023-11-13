@@ -6,13 +6,24 @@ type SearchInputProps = {
   onSearch: (value: string) => void;
 };
 
+const debounce = (func, wait) => {
+  let timeout;
+  return function executedFunction(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(this, args);
+    }, wait);
+  };
+};
+
 const ResearchSearchInput: React.FC<SearchInputProps> = ({ placeholder, onSearch }) => {
   const [inputValue, setInputValue] = useState('');
+  const debouncedSearch = useCallback(debounce(onSearch, 500), [onSearch]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
     setInputValue(newValue);
-    onSearch(newValue); // Call onSearch directly with the new value
+    debouncedSearch(newValue);
   };
 
   return (
