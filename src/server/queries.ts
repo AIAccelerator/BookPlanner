@@ -78,7 +78,8 @@ type GetResourcesInput = {
   page: number,
   limit: number,
   sort?: string,
-  searchTerm?: string
+  searchTerm?: string,
+  tag?: string // Add a new optional parameter for tag filtering
 };
 
 type GetResourcesOutput = {
@@ -100,10 +101,16 @@ export const getResources: GetResources<GetResourcesInput, GetResourcesOutput> =
     take: limit,
     orderBy: { ...{ createdAt: sort === 'DESC' ? 'desc' : 'asc' }},
     where: {
-      OR: [
-        { title: { contains: searchTerm, mode: 'insensitive' } },
-        { description: { contains: searchTerm, mode: 'insensitive' } },
-        // Add more search conditions here if needed
+      AND: [
+        {
+          OR: [
+            { title: { contains: searchTerm, mode: 'insensitive' } },
+            { description: { contains: searchTerm, mode: 'insensitive' } },
+            // Add more search conditions here if needed
+          ]
+        },
+        // Add a new condition for tag filtering if tag is provided
+        ...(tag ? [{ tags: { some: { name: { equals: tag, mode: 'insensitive' } } } }] : []),
       ]
     },
     include: {
