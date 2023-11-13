@@ -4,10 +4,14 @@ import getResources from '@wasp/queries/getResources';
 import Pagination from '../common/Pagination';
 import { TrashIcon, LinkIcon, DocumentTextIcon, DocumentIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
-const ResourcesList = ({ searchTerm }) => {
+interface ResourcesListProps {
+  searchTerm: string;
+}
+
+const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm }) => {
   // Assuming your project is set up with TypeScript
-  const [page, setPage] = useState<number>(1);
-  const [sortDirection, setSortDirection] = useState<string>("DESC");
+  const [page, setPage] = useState(1);
+  const [sortDirection, setSortDirection] = useState("DESC");
   const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm });
 
   const totalPages = data ? Math.ceil(data.totalResources / 10) : 0;
@@ -17,13 +21,9 @@ const ResourcesList = ({ searchTerm }) => {
     console.log(`Remove resource with ID: ${resourceId}`);
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  if (isLoading) return <div className="loading">Loading...</div>;
+  if (error) return <div className="error">Error: {error.message}</div>;
+  if (!data || data.resources.length === 0) return <div className="empty">No resources found.</div>;
 
   return (
     <div className="min-h-screen flex justify-center bg-gray-100 dark:bg-zinc-900">
