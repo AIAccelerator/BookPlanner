@@ -45,13 +45,17 @@ describe('ResourcesList', () => {
     cleanup();
   });
 
-  it('renders resources list successfully', () => {
-    const { getByText } = render(
+  it('renders resources list successfully', async () => {
+    const { getByText, queryByText } = render(
       <QueryClientProvider client={queryClient}>
         <ResourcesList />
       </QueryClientProvider>
     );
 
+    // Wait for the loading state to disappear
+    await waitFor(() => expect(queryByText('Loading...')).not.toBeInTheDocument());
+
+    // Now that loading is complete, perform your assertions
     expect(getByText('Resource 1')).toBeInTheDocument();
     expect(getByText('Resource 2')).toBeInTheDocument();
     cleanup();
