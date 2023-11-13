@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@wasp/queries';
 import getResources from '@wasp/queries/getResources';
 import Pagination from '../common/Pagination';
-import { TrashIcon, LinkIcon, DocumentTextIcon, DocumentIcon, SearchIcon } from '@heroicons/react/24/solid';
+import { TrashIcon, LinkIcon, DocumentTextIcon, DocumentIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 const ResourcesList = ({ searchTerm }) => {
   // Assuming your project is set up with TypeScript
@@ -38,7 +38,7 @@ const ResourcesList = ({ searchTerm }) => {
                    resource.type === 'pdf' ? <DocumentTextIcon className="w-8 h-8 mr-2" /> :
                    resource.type === 'doc' ? <DocumentIcon className="w-8 h-8 mr-2" /> :
                    resource.type === 'text' ? <DocumentTextIcon className="w-8 h-8 mr-2" /> :
-                   resource.type === 'google_search' ? <SearchIcon className="w-8 h-8 mr-2" /> :
+                   resource.type === 'google_search' ? <MagnifyingGlassIcon className="w-8 h-8 mr-2" /> :
                    <DefaultIcon className="w-8 h-8 mr-2" />}
                   <div>
                     <h3 className="font-semibold inline-block align-middle">{resource.title}</h3>
