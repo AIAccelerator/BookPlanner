@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@wasp/queries';
 import getResources from '@wasp/queries/getResources';
 import Pagination from '../common/Pagination';
-import { TrashIcon, LinkIcon, DocumentTextIcon } from '@heroicons/react/24/solid';
+import { TrashIcon, LinkIcon, DocumentTextIcon, DocumentIcon, SearchIcon } from '@heroicons/react/24/solid';
 
 const ResourcesList = ({ searchTerm }) => {
   // Assuming your project is set up with TypeScript
@@ -34,7 +34,12 @@ const ResourcesList = ({ searchTerm }) => {
             {data && data.resources.map((resource) => (
               <div key={resource.id} className="border rounded-lg p-4 flex justify-between items-center">
                 <div className="flex items-center">
-                  {resource.type === 'url' ? <LinkIcon className="w-8 h-8 mr-2" /> : resource.type === 'pdf' ? <DocumentTextIcon className="w-8 h-8 mr-2" /> : <DefaultIcon className="w-8 h-8 mr-2" />}
+                  {resource.type === 'url' ? <LinkIcon className="w-8 h-8 mr-2" /> :
+                   resource.type === 'pdf' ? <DocumentTextIcon className="w-8 h-8 mr-2" /> :
+                   resource.type === 'doc' ? <DocumentIcon className="w-8 h-8 mr-2" /> :
+                   resource.type === 'text' ? <DocumentTextIcon className="w-8 h-8 mr-2" /> :
+                   resource.type === 'google_search' ? <SearchIcon className="w-8 h-8 mr-2" /> :
+                   <DefaultIcon className="w-8 h-8 mr-2" />}
                   <div>
                     <h3 className="font-semibold inline-block align-middle">{resource.title}</h3>
                     <p className="text-zinc-500 dark:text-zinc-400">{resource.description}</p>
