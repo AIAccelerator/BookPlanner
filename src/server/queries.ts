@@ -110,7 +110,7 @@ export const getResources: GetResources<GetResourcesInput, GetResourcesOutput> =
           ]
         },
         // Add a new condition for tag filtering if tag is provided
-        ...(tag ? [{ tags: { some: { name: { equals: tag, mode: 'insensitive' } } } }] : []),
+        ...(tag ? [{ tags: { some: { name: { equals: tag, mode: 'insensitive' as QueryMode } } } }] : []),
       ]
     },
     include: {
