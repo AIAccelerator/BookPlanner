@@ -3,7 +3,8 @@ import { render, cleanup, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ResourcesList from './ResourcesList';
 
-global.IS_REACT_ACT_ENVIRONMENT = true;
+// Set IS_REACT_ACT_ENVIRONMENT manually at the top of the file
+global.IS_REACT_ACT_ENVIRONMENT = true; // This line can remain as is if it's already present
 const mockResources = [
   { id: 1, title: 'Resource 1', description: 'Description 1', type: 'url', url: 'http://example.com' },
   { id: 2, title: 'Resource 2', description: 'Description 2', type: 'pdf', url: 'http://example.com/pdf' },
@@ -34,7 +35,8 @@ vi.mock('@wasp/queries', () => ({
 const queryClient = new QueryClient();
 
 describe('ResourcesList', () => {
-  afterEach(cleanup);
+  // Remove the afterEach hook as it's not supported by the test runner
+  // Manually call cleanup() if necessary within each test
 
   it('renders loading state', () => {
     const { getByText } = render(
