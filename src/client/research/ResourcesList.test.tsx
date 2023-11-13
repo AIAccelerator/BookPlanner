@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ResourcesList from './ResourcesList';
 
