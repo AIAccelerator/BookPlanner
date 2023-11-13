@@ -34,6 +34,7 @@ vi.mock('@wasp/queries', () => ({
 const queryClient = new QueryClient();
 
 describe('ResourcesList', () => {
+  afterEach(cleanup);
 
   it('renders loading state', () => {
     const { getByText } = render(
