@@ -17,11 +17,13 @@ const ResourceItem: React.FC<ResourceItemProps> = ({ resource, onRemove }) => {
         <div>
           <h3 className="font-semibold inline-block align-middle">{resource.title}</h3>
           <p className="text-zinc-500 dark:text-zinc-400">{resource.description}</p>
-          <div className="mt-2">
-            {resource.tags.map((tag, index) => (
-              <span key={index} className="inline-block bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full text-sm mr-2">{tag}</span>
-            ))}
-          </div>
+          {Array.isArray(resource.tags) && (
+            <div className="mt-2">
+              {resource.tags.map((tag, index) => (
+                <span key={index} className="inline-block bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full text-sm mr-2">{tag}</span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <button
