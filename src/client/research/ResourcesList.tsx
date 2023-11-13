@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@wasp/queries';
 import getResources from '@wasp/queries/getResources';
 import Pagination from '../common/Pagination';
+import ResourceItem from './ResourceItem';
 import { TrashIcon, LinkIcon, DocumentTextIcon, DocumentIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 interface ResourcesListProps {
