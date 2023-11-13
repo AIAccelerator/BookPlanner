@@ -3,8 +3,8 @@ import { render, cleanup, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ResourcesList from './ResourcesList';
 
-// Set IS_REACT_ACT_ENVIRONMENT manually at the top of the file
-global.IS_REACT_ACT_ENVIRONMENT = true; // This line can remain as is if it's already present
+// Ensure IS_REACT_ACT_ENVIRONMENT is set for the test environment
+global.IS_REACT_ACT_ENVIRONMENT = true;
 const mockResources = [
   { id: 1, title: 'Resource 1', description: 'Description 1', type: 'url', url: 'http://example.com' },
   { id: 2, title: 'Resource 2', description: 'Description 2', type: 'pdf', url: 'http://example.com/pdf' },
