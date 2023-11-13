@@ -34,7 +34,7 @@ const ResourcesList = ({ searchTerm }) => {
             {data && data.resources.map((resource) => (
               <div key={resource.id} className="border rounded-lg p-4 flex justify-between items-center">
                 <div className="flex items-center">
-                  {resource.type === 'url' ? <LinkIcon className="w-8 h-8 mr-2" /> : resource.type === 'pdf' ? <DocumentTextIcon className="w-8 h-8 mr-2" /> : null}
+                  {resource.type === 'url' ? <LinkIcon className="w-8 h-8 mr-2" /> : resource.type === 'pdf' ? <DocumentTextIcon className="w-8 h-8 mr-2" /> : <DefaultIcon className="w-8 h-8 mr-2" />}
                   <div>
                     <h3 className="font-semibold inline-block align-middle">{resource.title}</h3>
                     <p className="text-zinc-500 dark:text-zinc-400">{resource.description}</p>
