@@ -87,7 +87,17 @@ type GetResourcesOutput = {
   totalResources: number;
 };
 
-export const getResources: GetResources<GetResourcesInput, GetResourcesOutput> = async ({ page, limit, sort = 'DESC', searchTerm = '' }, context) => {
+import { QueryMode } from '@prisma/client';
+
+type GetResourcesInput = {
+  page: number,
+  limit: number,
+  sort?: string,
+  searchTerm?: string,
+  tag?: string // Add a new optional parameter for tag filtering
+};
+
+export const getResources: GetResources<GetResourcesInput, GetResourcesOutput> = async ({ page, limit, sort = 'DESC', searchTerm = '', tag }, context) => {
   if (!context.user) {
     throw new HttpError(401);  // Unauthorized
   }
