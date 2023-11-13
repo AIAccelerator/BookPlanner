@@ -40,7 +40,9 @@ const FileUpload = () => {
       </div>
       {isUploading && (
         <div className="my-2">
-          <div className="progress-bar bg-primary" style={{ width: `${uploadProgress}%` }}></div>
+          <div className="progress-bar bg-primary" style={{ width: `${uploadProgress}%` }}>
+            <div className="h-full bg-accent animate-pulse" style={{ width: '100%' }}></div>
+          </div>
         </div>
       )}
       <ul className="list-none mt-2">
