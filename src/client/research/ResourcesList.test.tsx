@@ -11,8 +11,8 @@ const mockResources = [
 ]
 
 vi.mock('@wasp/queries', () => ({
-  useQuery: vi.fn().mockImplementation((queryKey, queryFn, options) => {
-    switch (options.testState) {
+  useQuery: vi.fn().mockImplementation((queryKey, options) => {
+    switch (options?.testState) {
       case 'loading':
         return { data: null, error: null, isLoading: true };
       case 'error':
@@ -35,13 +35,14 @@ vi.mock('@wasp/queries', () => ({
 const queryClient = new QueryClient();
 
 describe('ResourcesList', () => {
-  // Remove the afterEach hook as it's not supported by the test runner
-  // Manually call cleanup() if necessary within each test
+  afterEach(() => {
+    cleanup();
+  });
 
   it('renders loading state', () => {
     const { getByText } = render(
       <QueryClientProvider client={queryClient}>
-        <ResourcesList />
+        <ResourcesList testState="loading" />
       </QueryClientProvider>
     );
     expect(getByText('Loading...')).toBeInTheDocument();
@@ -51,7 +52,7 @@ describe('ResourcesList', () => {
   it('renders resources list successfully', async () => {
     const { getByText, queryByText } = render(
       <QueryClientProvider client={queryClient}>
-        <ResourcesList />
+        <ResourcesList testState="success" />
       </QueryClientProvider>
     );
 
