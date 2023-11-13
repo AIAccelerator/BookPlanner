@@ -22,14 +22,9 @@ const ResourcesPage: React.FC = () => {
     };
   };
 
-  // Update the searchTerm state with debouncing
-  const debouncedSetSearchTerm = useCallback(
-    debounce((searchValue) => setSearchTerm(searchValue), 300),
-    []
-  );
-
-  const handleSearchChange = (event) => {
-    debouncedSetSearchTerm(event.target.value);
+  // Update the searchTerm state immediately on change
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
   };
     return (
     <div className="bg-gray-100 dark:bg-zinc-900 min-h-screen">
