@@ -1,8 +1,9 @@
 :root {
-    --primary: #23374D;
-    --secondary: #3BA9D2;
-    --accent: #CBBB8A;
-    --background: #F4F5F7;
-    --text: #4B505A;
+    --primary: #23374D;       /* Dark Blue */
+    --secondary: #3BA9D2;     /* Light Blue */
+    --accent: #CBBB8A;        /* Beige */
+    --highlight: #FFC107;     /* Amber for highlight */
+    --background: #F4F5F7;    /* Light Grey */
+    --text: #4B505A;          /* Dark Grey */
   }
   

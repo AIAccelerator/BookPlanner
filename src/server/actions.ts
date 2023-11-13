@@ -209,11 +209,12 @@ type CreateResourceArgs = {
   description: string;
   type: string;
   url?: string;
+  userId: number;
   tags: TagInput[];
 };
 
 // Action to create a URL resource
-export const createUrlResource = async (args: CreateUrlResourceArgs, context) => {
+export const createUrlResource = async (args: CreateResourceArgs, context) => {
   const { url, title, description, userId } = args;
 
   // Ensure the user is logged in
@@ -234,70 +235,6 @@ export const createUrlResource = async (args: CreateUrlResourceArgs, context) =>
       description,
       type: 'url', // Assuming 'url' is one of the valid types for Resource
       user: { connect: { id: userId } },
-    },
-  });
-
-  return newResource;
-};
-
-// ... (existing code for createResource)
-
-};
-
-// Define the input type for creating a URL resource
-type CreateUrlResourceArgs = {
-  url: string;
-  title: string;
-  description: string;
-  userId: number;
-};
-
-// Action to create a URL resource
-export const createUrlResource = async (args: CreateUrlResourceArgs, context) => {
-  const { url, title, description, userId } = args;
-
-  // Ensure the user is logged in
-  if (!context.user) {
-    throw new HttpError(401, 'User not logged in');
-  }
-
-  // Ensure the logged-in user is the one creating the resource
-  if (context.user.id !== userId) {
-    throw new HttpError(403, 'User does not have permission to create resource for another user');
-  }
-
-  // Create the new resource
-  const newResource = await context.entities.Resource.create({
-    data: {
-      url,
-      title,
-      description,
-      type: 'url', // Assuming 'url' is one of the valid types for Resource
-      user: { connect: { id: userId } },
-    },
-  });
-
-  return newResource;
-};
-  const { title, description, type, url, tags } = args;
-
-  const newResource = await context.entities.Resource.create({
-    data: {
-      title,
-      description,
-      type,
-      url,
-      user: { connect: { id: context.user.id } }, // Connect the resource to the user
-      // Use connectOrCreate for each tag to either connect it if it exists or create it if it doesn't
-      tags: {
-        connectOrCreate: tags.map(tag => ({
-          where: { name: tag.name },
-          create: { name: tag.name },
-        })),
-      },
-    },
-    include: {
-      tags: true, // Include tags in the returned object
     },
   });
 

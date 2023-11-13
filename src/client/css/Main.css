@@ -1,5 +1,22 @@
 @import "themes/Theme.css";
 
+:root {
+    --font-xs: 0.75rem;
+    --font-sm: 0.875rem;
+    --font-md: 1rem; /* default size */
+    --font-lg: 1.125rem;
+    --font-xl: 1.25rem;
+    --font-2xl: 1.5rem;
+    --font-3xl: 1.875rem;
+    --font-4xl: 2.25rem;
+    --font-5xl: 3rem;
+    --font-6xl: 4rem;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
