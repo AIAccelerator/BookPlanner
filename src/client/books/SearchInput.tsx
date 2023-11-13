@@ -1,52 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { XMarkIcon } from '@heroicons/react/24/solid'
+import React, { useState, useEffect, useCallback } from 'react';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import debounce from 'lodash/debounce';
 
-type SearchInputProps = {
-    value: string;
-    onSearch: (value: string) => void;
-};
+interface SearchInputProps {
+  value: string;
+  onSearch: (value: string) => void;
+}
 
+/**
+ * `SearchInput` component provides a styled input field with a clear button for search functionality.
+ *
+ * @param {SearchInputProps} props - Component props.
+ * @returns {React.ReactElement} - A rendered search input component.
+ */
 const SearchInput: React.FC<SearchInputProps> = ({ value, onSearch }) => {
+  const [inputValue, setInputValue] = useState<string>(value);
 
-  const [inputValue, setInputValue] = useState(value);
+  const debouncedOnSearch = useCallback(
+    debounce((searchValue: string) => {
+      onSearch(searchValue);
+    }, 300),
+    [onSearch]
+  );
 
   useEffect(() => {
-    const debouncedOnSearch = debounce(() => {
-      onSearch(inputValue);
-    }, 1000);
-    
-    debouncedOnSearch();
-
-    // Cleanup the debounced function when the component is unmounted or when the effect reruns
+    debouncedOnSearch(inputValue);
     return () => {
       debouncedOnSearch.cancel();
     };
-  }, [inputValue, onSearch]);
+  }, [inputValue, debouncedOnSearch]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
   };
 
   const handleClearSearch = () => {
     setInputValue('');
     onSearch('');
   };
-  
+
   return (
     <div className="flex border p-2 rounded">
-      <input 
+      <input
         value={inputValue}
         onChange={handleInputChange}
         placeholder="Search for books..."
         className="flex-grow px-2 bg-transparent"
       />
       {inputValue && (
-        <XMarkIcon 
-          onClick={handleClearSearch}
-          className="h-5 w-5 text-primary cursor-pointer"
-          aria-label="Clear search"
-        />
+        <button onClick={handleClearSearch} aria-label="Clear search" className="p-1">
+          <XMarkIcon className="h-5 w-5 text-primary cursor-pointer" />
+        </button>
       )}
     </div>
   );
