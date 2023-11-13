@@ -98,14 +98,16 @@ export const getResources: GetResources<GetResourcesInput, GetResourcesOutput> =
   const resources = await context.entities.Resource.findMany({
     skip,
     take: limit,
-    orderBy: { ...{ createdAt: sort === 'DESC' ? 'desc' : 'asc' }},  // Modify this based on your Resource entity structure
+    orderBy: { ...{ createdAt: sort === 'DESC' ? 'desc' : 'asc' }},
     where: {
-      // Modify this where clause based on your Resource entity structure and search requirements
       OR: [
         { title: { contains: searchTerm, mode: 'insensitive' } },
         { description: { contains: searchTerm, mode: 'insensitive' } },
         // Add more search conditions here if needed
       ]
+    },
+    include: {
+      tags: true, // Include the tags in the response
     }
   });
 
