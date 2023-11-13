@@ -1,18 +1,18 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
-interface SearchInputProps {
+type SearchInputProps = {
   placeholder: string;
   onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
+};
 
 /**
- * SearchInput component provides a styled input field for search functionality.
+ * `SearchInput` component provides a styled input field for search functionality.
  *
- * @param {SearchInputProps} props Component props.
- * @returns {React.ReactElement} A rendered search input component.
+ * @param {SearchInputProps} props - Component props.
+ * @returns {React.ReactElement} - A rendered search input component.
  */
-const SearchInput: FC<SearchInputProps> = ({ placeholder, onSearchChange }) => (
+const SearchInput: React.FC<SearchInputProps> = ({ placeholder, onSearchChange }) => (
     <div className="relative w-80">
       <input
         placeholder={placeholder}
