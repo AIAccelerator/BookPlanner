@@ -62,7 +62,7 @@ const ListBooksPage: React.FC = () => {
 
   return (
     <div className="container mx-auto mt-10 p-4 bg-background rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-text">List of Books</h1>
         <button 
           onClick={handleOpenModal} 

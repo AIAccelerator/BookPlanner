@@ -27,8 +27,8 @@ const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm }: ResourcesLi
   if (!data || data.resources.length === 0) return <div className="empty">No resources found.</div>;
 
   return (
-    <div className="min-h-screen flex justify-center bg-gray-100 dark:bg-zinc-900">
-      <section className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-6 bg-white dark:bg-zinc-800 rounded-lg shadow-md overflow-hidden flex">
+    <div className="min-h-screen flex flex-col justify-center bg-gray-100 dark:bg-zinc-900">
+      <section className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-6 bg-white dark:bg-zinc-800 rounded-lg shadow-md overflow-hidden">
         <main className="flex-1 p-6">
           <h2 className="text-2xl font-bold mb-4">Selected Sources</h2>
           <div className="grid gap-4">
