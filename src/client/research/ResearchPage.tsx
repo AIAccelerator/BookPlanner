@@ -4,12 +4,29 @@ import Filters from './Filters'; // Filters component
 import ResourcesMenu from './ResourcesMenu'; // Dropdown button for adding resources
 import ResourcesList from './ResourcesList';
 import ResearchFilterSortSidebar from './ResearchFilterSortSidebar';
-// import ResourceList from './ResourceList'; // Component for listing resources
-// import Pagination from './Pagination'; // Pagination component
+import SidebarModal from '../common/SidebarModal';
+import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { useQuery } from '@wasp/queries';
+import getResources from '@wasp/queries/getResources';
 
 const ResourcesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [tag, setTag] = useState<string>('');
+  const [isFilterModalOpen, setFilterModalOpen] = useState(false);
+  const [sort, setSort] = useState('DESC');
+  const [page, setPage] = useState(1);
+  const handleOpenFilterModal = () => setFilterModalOpen(true);
+  const handleCloseFilterModal = () => setFilterModalOpen(false);
+  const clearSearch = () => setSearchTerm('');
+
+  const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort, searchTerm, tag });
+
+  const totalPages = data ? Math.ceil(data.totalResources / 10) : 0;
+
+  const handleTagClick = (tagName: string) => {
+    setTag(tagName)
+  };
 
   const handleSearchTermChange = (newSearchTerm: string) => {
     setSearchTerm(newSearchTerm);
@@ -54,12 +71,34 @@ const ResourcesPage: React.FC = () => {
         </header>
         
         <main>
-          <ResearchFilterSortSidebar
-            searchTerm={searchTerm}
-            onSearchTermChange={handleSearchTermChange}
-            onTagChange={handleTagChange}
-          />
-          <ResourcesList searchTerm={searchTerm} selectedTags={selectedTags} />
+            <div className="flex justify-between items-center mb-4">
+            <span className="text-lg text-text">Total Books: {data?.totalResources}</span>
+              <button 
+                onClick={handleOpenFilterModal} 
+                className="bg-secondary text-background py-2 px-4 rounded flex items-center"
+              >
+                Filters <FunnelIcon className="ml-2 h-5 w-5" /> 
+                {searchTerm && <span className="ml-2 text-accent">"{searchTerm}"</span>}
+                {searchTerm && (
+                  <XMarkIcon 
+                    onClick={clearSearch} 
+                    className="h-5 w-5 ml-2 text-accent cursor-pointer"
+                    aria-label="Clear search"
+                  />
+                )}    
+            </button>
+          </div>
+
+          <SidebarModal title="Filter Sources" isOpen={isFilterModalOpen} onClose={handleCloseFilterModal}>
+            <ResearchFilterSortSidebar
+              searchTerm={searchTerm}
+              sortDirection={sort}
+              onSearchTermChange={handleSearchTermChange}
+              onTagChange={handleTagChange}
+              onSortDirectionChange={() => {}}
+            />
+          </SidebarModal>
+          <ResourcesList searchTerm={searchTerm} onTagClick={handleTagClick} selectedTags={selectedTags} />
         </main>
       </div>
     </div>

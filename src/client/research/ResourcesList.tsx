@@ -4,15 +4,17 @@ import getResources from '@wasp/queries/getResources';
 import Pagination from '../common/Pagination';
 import ResourceItem from './ResourceItem';
 import { TrashIcon, LinkIcon, DocumentTextIcon, DocumentIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { Resource } from '@prisma/client';
+import prisma from '@wasp/prisma';
+
 
 interface ResourcesListProps {
   searchTerm: string;
+  resources: prisma.resource[];
+  onTagClick: (tagName: string) => void;
 }
 
-const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm }: ResourcesListProps) => {
-  const handleTagClick = (tagName: string) => {
-    setTag(tagName)
-  };
+const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm , resources, onTagClick}: ResourcesListProps) => {
   // Assuming your project is set up with TypeScript
   const [page, setPage] = useState(1);
   const [sortDirection, setSortDirection] = useState("DESC");
@@ -38,7 +40,7 @@ const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm }: ResourcesLi
           <h2 className="text-2xl font-bold mb-4">Selected Sources</h2>
           <div className="grid gap-4">
             {data.resources.map(resource => (
-              <ResourceItem key={resource.id} resource={resource} onRemove={handleRemove} onTagClick={handleTagClick} />
+              <ResourceItem key={resource.id} resource={resource} onRemove={handleRemove} onTagClick={onTagClick} />
             ))}
           </div>
           <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
