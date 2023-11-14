@@ -7,7 +7,22 @@ import ResourcesList from './ResourcesList';
 // import Pagination from './Pagination'; // Pagination component
 
 const ResourcesPage: React.FC = () => {
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const handleSearchTermChange = (newSearchTerm: string) => {
+    setSearchTerm(newSearchTerm);
+  };
+
+  const handleTagChange = (newTag: string) => {
+    setSelectedTags(prevTags => {
+      if (prevTags.includes(newTag)) {
+        return prevTags.filter(tag => tag !== newTag);
+      } else {
+        return [...prevTags, newTag];
+      }
+    });
+  };
 
   // Debounce function
   const debounce = (func, wait) => {
@@ -38,7 +53,12 @@ const ResourcesPage: React.FC = () => {
         </header>
         
         <main>
-          <ResourcesList searchTerm={searchTerm} />
+          <ResearchFilterSortSidebar
+            searchTerm={searchTerm}
+            onSearchTermChange={handleSearchTermChange}
+            onTagChange={handleTagChange}
+          />
+          <ResourcesList searchTerm={searchTerm} selectedTags={selectedTags} />
         </main>
       </div>
     </div>
