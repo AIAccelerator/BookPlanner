@@ -20,6 +20,20 @@ const ResearchFilterSortSidebar: React.FC<ResearchFilterSortSidebarProps> = ({
 }) => {
     // Local state to debounce the search term input
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+    const [activeTags, setActiveTags] = useState<string[]>([]);
+
+    const handleAddTag = (tag: string) => {
+        if (!activeTags.includes(tag)) {
+            setActiveTags([...activeTags, tag]);
+        }
+    };
+
+    const handleRemoveTag = (tag: string) => {
+        setActiveTags(activeTags.filter(t => t !== tag));
+    };
+
+    // Pass the activeTags to the parent component or query function to filter resources
+    // This part of the logic will depend on how the parent component or query function expects to receive the tags
 
     // Effect for debouncing search term input
     useEffect(() => {
