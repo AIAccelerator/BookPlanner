@@ -107,11 +107,10 @@ async function createBooks(prismaClient, data) {
   return newBook;
 }
 
-
 async function createResource(prismaClient, data) {
- 
   const { title, description, type, url, tags, userId } = data;
-  const newBook = await prismaClient.resource.create({
+
+  const newResource = await prismaClient.resource.create({
     data: {
       title,
       description,
@@ -123,13 +122,17 @@ async function createResource(prismaClient, data) {
         },
       },
       tags: {
-        connectOrCreate: tags.map(tag => ({
-          where: { name: tag.name },
-          create: { name: tag.name },
-        })),
-      },
+        create: tags.map(tag => ({
+          tag: {
+            connectOrCreate: {
+              where: { name: tag.name },
+              create: { name: tag.name },
+            }
+          }
+        }))
+      }
     }
   });
 
-  return newBook;
+  return newResource;
 }

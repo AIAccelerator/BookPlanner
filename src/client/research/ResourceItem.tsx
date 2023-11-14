@@ -20,7 +20,7 @@ const ResourceItem: React.FC<ResourceItemProps> = ({ resource, onRemove }) => {
           {resource.tags && resource.tags.length > 0 && (
             <div className="mt-2">
               {resource.tags.map((tag, index) => (
-                <span key={index} className="inline-block bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full text-sm mr-2">{tag.name}</span>
+                <span key={index} className="inline-block bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full text-sm mr-2">{tag.tag?.name}</span>
               ))}
             </div>
           )}

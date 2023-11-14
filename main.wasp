@@ -156,15 +156,22 @@ entity Resource {=psl
   url         String?   // Optional field to store the URL
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  tags        Tag[]    @relation("ResourceToTag") // Many-to-many relationship
+  tags        ResourceToTag[]
 psl=}
 
 entity Tag {=psl
   id        Int       @id @default(autoincrement())
   name      String    @unique
-  resources Resource[] @relation("ResourceToTag") // Many-to-many relationship
+  resources ResourceToTag[]
 psl=}
 
+entity ResourceToTag {=psl
+  id        Int       @id @default(autoincrement())
+  tagId     Int
+  resourceId Int
+  tag       Tag       @relation(fields: [tagId], references: [id])
+  resource  Resource  @relation(fields: [resourceId], references: [id])
+psl=}
 /* 📡 These are the Wasp Routes (You can protect them easily w/ 'authRequired: true');
  * https://wasp-lang.dev/docs/tutorial/pages
  */
