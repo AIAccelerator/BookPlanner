@@ -3,6 +3,7 @@ import SearchInput from '../common/SearchInput'; // Search input component
 import Filters from './Filters'; // Filters component
 import ResourcesMenu from './ResourcesMenu'; // Dropdown button for adding resources
 import ResourcesList from './ResourcesList';
+import ResearchFilterSortSidebar from './ResearchFilterSortSidebar';
 // import ResourceList from './ResourceList'; // Component for listing resources
 // import Pagination from './Pagination'; // Pagination component
 
