@@ -5,9 +5,10 @@ import { Tag } from '@prisma/client';
 interface ResourceItemProps {
   resource: any; // Replace 'any' with the actual type of your resource
   onRemove: (id: number) => void;
+  onTagClick: (tagName: string) => void;
 }
 
-const ResourceItem: React.FC<ResourceItemProps> = ({ resource, onRemove }) => {
+const ResourceItem: React.FC<ResourceItemProps> = ({ resource, onRemove, onTagClick}) => {
   // Logic to determine which icon to use based on the resource type
   const IconComponent = getIconComponent(resource.type);
 

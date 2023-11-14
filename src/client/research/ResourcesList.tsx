@@ -9,16 +9,16 @@ interface ResourcesListProps {
   searchTerm: string;
 }
 
-const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm, setSearchTerm }: ResourcesListProps) => {
+const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm }: ResourcesListProps) => {
   const handleTagClick = (tagName: string) => {
-    setSearchTerm(tagName);
-    // If there is a search function, call it here
-    // searchResources(tagName);
+    setTag(tagName)
   };
   // Assuming your project is set up with TypeScript
   const [page, setPage] = useState(1);
   const [sortDirection, setSortDirection] = useState("DESC");
-  const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm });
+  const [tag, setTag] = useState<string>('');
+
+  const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm, tag });
 
   const totalPages = data ? Math.ceil(data.totalResources / 10) : 0;
 
@@ -38,7 +38,7 @@ const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm, setSearchTerm
           <h2 className="text-2xl font-bold mb-4">Selected Sources</h2>
           <div className="grid gap-4">
             {data.resources.map(resource => (
-              <ResourceItem key={resource.id} resource={resource} onRemove={handleRemove} />
+              <ResourceItem key={resource.id} resource={resource} onRemove={handleRemove} onTagClick={handleTagClick} />
             ))}
           </div>
           <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
