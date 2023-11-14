@@ -1,5 +1,6 @@
 import React from 'react';
 import { TrashIcon, LinkIcon, DocumentTextIcon, DocumentIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { Tag } from '@prisma/client';
 
 interface ResourceItemProps {
   resource: any; // Replace 'any' with the actual type of your resource
@@ -19,7 +20,7 @@ const ResourceItem: React.FC<ResourceItemProps> = ({ resource, onRemove }) => {
           <p className="text-zinc-500 dark:text-zinc-400">{resource.description}</p>
           {resource.tags && resource.tags.length > 0 && (
             <div className="mt-2">
-              {resource.tags.map((tag, index) => (
+              {resource.tags.map((tag: { tag: Tag }, index) => (
                 <span key={index} className="inline-block bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full text-sm mr-2">{tag.tag?.name}</span>
               ))}
             </div>
@@ -49,7 +50,7 @@ function getIconComponent(type: string) {
     case 'google_search':
       return MagnifyingGlassIcon;
     default:
-      return DefaultIcon; // Replace with actual default icon component
+      return DocumentIcon; // Replace with actual default icon component
   }
 }
 
