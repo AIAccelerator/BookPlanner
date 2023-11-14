@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import SearchInput from './SearchInput'; // Search bar component
+import SearchInput from '../common/SearchInput'; // Search input component
 import Filters from './Filters'; // Filters component
 import ResourcesMenu from './ResourcesMenu'; // Dropdown button for adding resources
 import ResourcesList from './ResourcesList';
