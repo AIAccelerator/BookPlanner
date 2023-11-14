@@ -9,7 +9,12 @@ interface ResourcesListProps {
   searchTerm: string;
 }
 
-const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm }: ResourcesListProps) => {
+const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm, setSearchTerm }: ResourcesListProps) => {
+  const handleTagClick = (tagName: string) => {
+    setSearchTerm(tagName);
+    // If there is a search function, call it here
+    // searchResources(tagName);
+  };
   // Assuming your project is set up with TypeScript
   const [page, setPage] = useState(1);
   const [sortDirection, setSortDirection] = useState("DESC");
