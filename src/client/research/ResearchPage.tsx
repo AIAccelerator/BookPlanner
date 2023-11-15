@@ -6,6 +6,8 @@ import Pagination from '../common/Pagination';
 import SidebarModal from '../common/SidebarModal';
 import ResearchFilterSortSidebar from './ResearchFilterSortSidebar';
 import ResourcesList from './ResourcesList';
+import Tooltip from '../common/Tooltip';
+import { Transition } from '@headlessui/react';
 
 const ResearchPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -24,6 +26,7 @@ const ResearchPage: React.FC = () => {
     setTag(tagName);
     setPage(1);
   }
+  const clearTag = () => setTag('');
 
   const handleRemove = (resourceId: number) => {
     console.log(`Remove resource with ID: ${resourceId}`);
@@ -48,22 +51,61 @@ const ResearchPage: React.FC = () => {
       </div>
 
       <div className="flex justify-between items-center mb-4">
-        <span className="text-lg">Total Resources: {data?.totalResources}</span>
+      <span className="text-lg">Total Resources: {data?.totalResources}</span>
+      <div className="flex items-center">
+      {searchTerm && (
+          <Transition 
+            show={!!tag}
+            enter="transition-opacity duration-600"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity duration-600"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0">      
+            <Tooltip content="Click to remove search filter">
+              <div className="bg-primary text-background px-3 py-1 rounded-full flex items-center mr-2">
+                <span className="text-sm">{searchTerm}</span>
+                <XMarkIcon 
+                  onClick={clearSearch} 
+                  className="h-4 w-4 ml-2 cursor-pointer text-background hover:text-secondary"
+                  aria-label="Clear search"
+                />
+              </div>
+            </Tooltip>
+          </Transition>
+        )}
+        {/* Display tag as a badge with Tooltip */}
+        {tag && (
+          <Transition 
+            show={!!tag}
+            enter="transition-opacity duration-600"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity duration-600"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0">
+          <Tooltip content="Click to remove tag filter">
+            <div className="bg-primary text-background px-3 py-1 rounded-full flex items-center mr-2">
+              <span className="text-sm">#{tag}</span>
+              <XMarkIcon 
+                onClick={clearTag} 
+                className="h-4 w-4 ml-2 cursor-pointer text-background hover:text-secondary"
+                aria-label="Clear tag"
+              />
+            </div>
+          </Tooltip>
+          </Transition>
+        )}
+
+        {/* Filter button */}
         <button 
           onClick={handleOpenFilterModal} 
           className="bg-secondary text-background py-2 px-4 rounded flex items-center"
         >
-          Filters <FunnelIcon className="ml-2 h-5 w-5" /> 
-          {searchTerm && <span className="ml-2">"{searchTerm}"</span>}
-          {searchTerm && (
-            <XMarkIcon 
-              onClick={clearSearch} 
-              className="h-5 w-5 ml-2 cursor-pointer"
-              aria-label="Clear search"
-            />
-          )}    
+          Filters <FunnelIcon className="ml-2 h-5 w-5" />
         </button>
       </div>
+    </div>
 
       {/* Pagination Controls */}
       <div className="mb-8 flex justify-center">
