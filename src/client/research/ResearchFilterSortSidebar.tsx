@@ -19,7 +19,6 @@ const ResearchFilterSortSidebar: React.FC<ResearchFilterSortSidebarProps> = ({
     onTagChange,
 }) => {
     // Local state to debounce the search term input
-    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
     const [activeTags, setActiveTags] = useState<string[]>([]);
 
     const handleAddTag = (tag: string) => {
@@ -32,23 +31,9 @@ const ResearchFilterSortSidebar: React.FC<ResearchFilterSortSidebarProps> = ({
         setActiveTags(activeTags.filter(t => t !== tag));
     };
 
-    // Pass the activeTags to the parent component or query function to filter resources
-    // This part of the logic will depend on how the parent component or query function expects to receive the tags
-
-    // Effect for debouncing search term input
-    useEffect(() => {
-        const timerId = setTimeout(() => {
-            onSearchTermChange(debouncedSearchTerm);
-        }, 500); // Debounce delay of 500 ms
-
-        return () => {
-            clearTimeout(timerId);
-        };
-    }, [debouncedSearchTerm, onSearchTermChange]);
-
     // Handler for search term input change
     const handleSearchTermChange = (newSearchTerm: string) => {
-        setDebouncedSearchTerm(newSearchTerm);
+        onSearchTermChange(newSearchTerm);
     };
 
     // Handler for sort direction change
@@ -65,7 +50,7 @@ const ResearchFilterSortSidebar: React.FC<ResearchFilterSortSidebarProps> = ({
                 </label>
                 <SearchInput 
                     id="search-input"
-                    value={debouncedSearchTerm}
+                    value={searchTerm}
                     onSearch={handleSearchTermChange}
                 />
             </div>

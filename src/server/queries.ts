@@ -73,7 +73,6 @@ export const getBooks: GetBooks<GetBooksInput, GetBooksOutput> = async ({ page, 
   };
 };
 
-
 type GetResourcesOutput = {
   resources: Resource[];
   totalResources: number;
@@ -87,54 +86,73 @@ type GetResourcesInput = {
   tag?: string // Add a new optional parameter for tag filtering
 };
 
-export const getResources: GetResources<GetResourcesInput, GetResourcesOutput> = async ({ page, limit, sort = 'DESC', searchTerm = '', tag = '' }, context) => {
+export const getResources: GetResources<GetResourcesInput, GetResourcesOutput> = async ({page, limit, sort = 'desc', searchTerm = '', tag =''}, context) => {
   if (!context.user) {
     throw new HttpError(401); // Unauthorized
   }
 
-  // Calculate the offset
   const skip = (page - 1) * limit;
-  let whereCondition = {
-    AND: [
-      {
-        OR: [
-          { title: { contains: searchTerm } },
-          { description: { contains: searchTerm } },
-        ],
+
+  const resources = await context.entities.Resource.findMany({
+    skip,        
+    take: limit,
+    orderBy: { createdAt: sort === 'DESC' ? 'desc' : 'asc' },
+    where: {
+      user: {
+        id: context.user.id
       },
-      ...(tag ? [{
-        tags: {
-          some: {
-            tag: {
-              is: {
-                name: { equals: tag }
+      AND: [
+        searchTerm ? {
+          OR: [
+            { title: { contains: searchTerm, mode: 'insensitive' } },
+            { description: { contains: searchTerm, mode: 'insensitive' } }
+          ]
+        } : {},
+        tag ? {
+          tags: {
+            some: {
+              tag: {
+                name: { contains: tag, mode: 'insensitive' }
               }
             }
           }
-        }
-      }] : [])
-    ],
-  };
-  
-  // Construct the query
-  const query = {
-    skip,
-    take: limit,
-    where: whereCondition,
+        } : {}
+      ]
+    },
     include: {
       tags: {
         include: {
-          tag: true, // Include the related Tag entity
+          tag: true
         }
       }
     },
-  };
-
-  // Fetch resources
-  const resources = await context.entities.Resource.findMany(query);
-
-  // Count total resources
-  const totalResources = await context.entities.Resource.count({ where: query.where });
-
+  });
+    
+// Count total resources
+const totalResources = await context.entities.Resource.count({
+  where: {
+    user: {
+      id: context.user.id
+    },
+    AND: [
+      searchTerm ? {
+        OR: [
+          { title: { contains: searchTerm, mode: 'insensitive' } },
+          { description: { contains: searchTerm, mode: 'insensitive' } }
+        ]
+      } : {},
+      tag ? {
+        tags: {
+          some: {
+            tag: {
+              name: { contains: tag, mode: 'insensitive' }
+            }
+          }
+        }
+      } : {}
+    ]
+  }
+});
+  
   return { resources, totalResources };
-};
+}

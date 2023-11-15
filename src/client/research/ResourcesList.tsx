@@ -1,52 +1,38 @@
-import React, { useState } from 'react';
-import { useQuery } from '@wasp/queries';
-import getResources from '@wasp/queries/getResources';
-import Pagination from '../common/Pagination';
-import ResourceItem from './ResourceItem';
-import { TrashIcon, LinkIcon, DocumentTextIcon, DocumentIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import { Resource } from '@prisma/client';
+import React from 'react';
+import { Transition } from '@headlessui/react';
 import prisma from '@wasp/prisma';
-
+import { TrashIcon, LinkIcon, DocumentTextIcon, DocumentIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import ResourceItem from './ResourceItem';
 
 interface ResourcesListProps {
-  searchTerm: string;
   resources: prisma.resource[];
   onTagClick: (tagName: string) => void;
+  onRemove: (resourceId: number) => void;
 }
 
-const ResourcesList: React.FC<ResourcesListProps> = ({ searchTerm , resources, onTagClick}: ResourcesListProps) => {
-  // Assuming your project is set up with TypeScript
-  const [page, setPage] = useState(1);
-  const [sortDirection, setSortDirection] = useState("DESC");
-  const [tag, setTag] = useState<string>('');
+const ResourcesList: React.FC<ResourcesListProps> = ({ resources, onTagClick, onRemove }) => {
 
-  const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm, tag });
 
-  const totalPages = data ? Math.ceil(data.totalResources / 10) : 0;
-
-  const handleRemove = (resourceId: number) => {
-    // Logic to remove the resource from the list
-    console.log(`Remove resource with ID: ${resourceId}`);
-  };
-
-  if (isLoading) return <div className="loading">Loading...</div>;
-  if (error) return <div className="error">Error: {error.message}</div>;
-  if (!data || data.resources.length === 0) return <div className="empty">No resources found.</div>;
+  if (!resources || resources.length === 0) return <div className="empty">No resources found.</div>;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-zinc-900">
-      <section className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-6 bg-white dark:bg-zinc-800 rounded-lg shadow-md overflow-hidden">
-        <main className="flex-1 p-6">
-          <h2 className="text-2xl font-bold mb-4">Selected Sources</h2>
-          <div className="grid gap-4">
-            {data.resources.map(resource => (
-              <ResourceItem key={resource.id} resource={resource} onRemove={handleRemove} onTagClick={onTagClick} />
-            ))}
-          </div>
-          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
-        </main>
-      </section>
-    </div>
+    <Transition
+      as="div"
+      className="bg-white p-6 rounded-lg shadow-lg"
+      show={true}
+      enter="transition-opacity duration-300"
+      enterFrom="opacity-0"
+      enterTo="opacity-100"
+    >
+      {resources.map(resource => (
+        <ResourceItem
+          key={resource.id}
+          resource={resource}
+          onTagClick={onTagClick}
+          onRemove={onRemove}
+        />
+      ))}
+    </Transition>
   );
 };
 
