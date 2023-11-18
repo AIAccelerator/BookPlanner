@@ -240,3 +240,28 @@ export const createUrlResource = async (args: CreateResourceArgs, context) => {
 
   return newResource;
 };
+
+type RemoveResourceArgs = {
+  id: number;
+};
+
+export const removeResource = async (args: RemoveResourceArgs, context) => {
+  const { id } = args;
+  if (!context.user) {
+    throw new HttpError(401, 'User not logged in');
+  }
+
+  const resource = await context.entities.Resource.findUnique({ where: { id: id } });
+  console.log(resource);
+  if (!resource) {
+    throw new HttpError(404, 'Resource not found');
+  }
+
+  if (context.user.id !== resource.userId) {
+    throw new HttpError(403, 'User does not have permission to delete resource');
+  }
+  
+  await context.entities.Resource.delete({ where: { id } });
+
+  return true;
+}

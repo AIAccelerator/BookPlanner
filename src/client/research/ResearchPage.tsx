@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery } from '@wasp/queries';
+import { useAction } from '@wasp/actions';
 import getResources from '@wasp/queries/getResources';
+import removeResource from '@wasp/actions/removeResource';
 import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import Pagination from '../common/Pagination';
 import SidebarModal from '../common/SidebarModal';
@@ -30,6 +32,7 @@ const ResearchPage: React.FC = () => {
 
   const handleRemove = (resourceId: number) => {
     console.log(`Remove resource with ID: ${resourceId}`);
+    useAction(removeResource, { id: resourceId});
   }
 
   const toggleSortDirection = () => {
@@ -54,14 +57,6 @@ const ResearchPage: React.FC = () => {
       <span className="text-lg">Total Resources: {data?.totalResources}</span>
       <div className="flex items-center">
       {searchTerm && (
-          <Transition 
-            show={!!tag}
-            enter="transition-opacity duration-600"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="transition-opacity duration-600"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0">      
             <Tooltip content="Click to remove search filter">
               <div className="bg-primary text-background px-3 py-1 rounded-full flex items-center mr-2">
                 <span className="text-sm">{searchTerm}</span>
@@ -72,7 +67,6 @@ const ResearchPage: React.FC = () => {
                 />
               </div>
             </Tooltip>
-          </Transition>
         )}
         {/* Display tag as a badge with Tooltip */}
         {tag && (

@@ -3,6 +3,7 @@ import { Transition } from '@headlessui/react';
 import prisma from '@wasp/prisma';
 import { TrashIcon, LinkIcon, DocumentTextIcon, DocumentIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import ResourceItem from './ResourceItem';
+import Tooltip from '../common/Tooltip';
 
 interface ResourcesListProps {
   resources: prisma.resource[];
