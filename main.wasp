@@ -150,7 +150,7 @@ entity Resource {=psl
   id          Int      @id @default(autoincrement())
   title       String
   description String
-  type        String
+  resourceType        String
   userId      Int      // Foreign key to relate a resource to a user
   user User   @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship to User entity
   url         String?   // Optional field to store the URL
@@ -315,6 +315,11 @@ query getResources {
   fn: import { getResources } from "@server/queries.js",
   entities: [User, Resource]
 }
+
+query getTags {
+  fn: import { searchTags } from "@server/queries.js",
+  entities: [Tag, ResourceToTag, User]
+}
 /*
  * 📡 These are custom Wasp API Endpoints. Use them for callbacks, webhooks, etc.
  * https://wasp-lang.dev/docs/advanced/apis
@@ -339,4 +344,11 @@ job emailChecker {
     cron: "0 7 * * 1" // at 7:00 am every Monday
   },
   entities: [User]
+}
+
+job scrapeUrl {
+  executor: PgBoss,
+  perform: {
+    fn: import { performScrape } from "@server/workers/scrapeUrl.js"
+  },
 }

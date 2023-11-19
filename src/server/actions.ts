@@ -5,7 +5,7 @@ import type { GenerateGptResponse, StripePayment } from '@wasp/actions/types';
 import type { StripePaymentResult, OpenAIResponse } from './types';
 import Stripe from 'stripe';
 import { type } from 'os';
-import multer from 'multer';
+
 
 const stripe = new Stripe(process.env.STRIPE_KEY!, {
   apiVersion: '2022-11-15',
@@ -202,39 +202,46 @@ export const createChapter = async (args: CreateChapterArgs, context) => {
 
 type TagInput = {
   name: string;
+  id: number;
 };
 
 type CreateResourceArgs = {
   title: string;
   description: string;
-  type: string;
-  url?: string;
+  resourceType: string;
+  url: string;
   userId: number;
   tags: TagInput[];
 };
-
-// Action to create a URL resource
 export const createUrlResource = async (args: CreateResourceArgs, context) => {
-  const { url, title, description, userId } = args;
+  const { url, title, description, resourceType, tags } = args;
 
   // Ensure the user is logged in
   if (!context.user) {
     throw new HttpError(401, 'User not logged in');
   }
 
-  // Ensure the logged-in user is the one creating the resource
-  if (context.user.id !== userId) {
-    throw new HttpError(403, 'User does not have permission to create resource for another user');
+  // Ensure the record is unique
+  const existingResource = await context.entities.Resource.findFirst({ 
+    where: { url }
+  });
+
+  if (existingResource) {
+    // If the resource already exists, throw an error
+    throw new HttpError(409, 'Resource already exists');
   }
 
-  // Create the new resource
+  // If the resource does not exist, create a new one
   const newResource = await context.entities.Resource.create({
     data: {
       url,
       title,
       description,
-      type: 'url', // Assuming 'url' is one of the valid types for Resource
-      user: { connect: { id: userId } },
+      resourceType,
+      user: { connect: { id: context.user.id } },
+      tags: {
+        create: tags.map(tag => ({ tag: { connect: { id: tag.id } } })),
+      },
     },
   });
 
@@ -252,7 +259,6 @@ export const removeResource = async (args: RemoveResourceArgs, context) => {
   }
 
   const resource = await context.entities.Resource.findUnique({ where: { id: id } });
-  console.log(resource);
   if (!resource) {
     throw new HttpError(404, 'Resource not found');
   }

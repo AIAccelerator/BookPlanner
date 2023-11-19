@@ -1,10 +1,10 @@
 import HttpError from '@wasp/core/HttpError.js';
 import type { RelatedObject } from '@wasp/entities';
 import type { GetRelatedObjects } from '@wasp/queries/types';
-import type { Book } from '@wasp/entities';
-import type { Resource } from '@wasp/entities';
 import type { GetBooks } from '@wasp/queries/types';
 import type { GetResources } from '@wasp/queries/types';
+import type { Book, Resource, Tag } from '@wasp/entities';
+import type { GetTags } from "@wasp/queries/types";
 
 export const getRelatedObjects: GetRelatedObjects<void, RelatedObject[]> = async (args, context) => {
   if (!context.user) {
@@ -156,3 +156,39 @@ const totalResources = await context.entities.Resource.count({
   
   return { resources, totalResources };
 }
+
+type SearchTagsInput = {
+  searchTerm: string;
+  page: number, 
+  limit: number, 
+  sort?: string;
+};
+
+type SearchTagsOutput = {
+  tags: Tag[];
+};
+
+export const searchTags: GetTags<SearchTagsInput, SearchTagsOutput> = async ({page, limit, sort = 'desc', searchTerm = '' }: SearchTagsInput, context): Promise<SearchTagsOutput> => {
+  if (!context.user) {
+    throw new HttpError(401); // Unauthorized
+  }
+
+  const tags = await context.entities.Tag.findMany({
+    skip: (page - 1) * limit,
+    take: limit,
+    orderBy: { name: sort as 'asc' | 'desc' },
+    where: {
+      name: { contains: searchTerm, mode: 'insensitive' },
+      resources: {
+        some: {
+          resource: {
+            userId: context.user.id,
+          },
+        },
+      },
+    },
+  });
+
+  return { tags };
+}
+

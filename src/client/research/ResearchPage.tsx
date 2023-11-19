@@ -3,13 +3,16 @@ import { useQuery } from '@wasp/queries';
 import { useAction } from '@wasp/actions';
 import getResources from '@wasp/queries/getResources';
 import removeResource from '@wasp/actions/removeResource';
-import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { FunnelIcon, XMarkIcon, DocumentTextIcon, DocumentPlusIcon, LinkIcon, DocumentIcon, MagnifyingGlassPlusIcon } from '@heroicons/react/24/solid';
 import Pagination from '../common/Pagination';
 import SidebarModal from '../common/SidebarModal';
 import ResearchFilterSortSidebar from './ResearchFilterSortSidebar';
 import ResourcesList from './ResourcesList';
 import Tooltip from '../common/Tooltip';
-import { Transition } from '@headlessui/react';
+import { Transition, Menu } from '@headlessui/react';
+import ResourceForm from './forms/ResourceForm';
+import ResourceType from '../common/types/ResourceType';
+import IconComponent from './IconComponent';
 
 const ResearchPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -17,8 +20,11 @@ const ResearchPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [isFilterModalOpen, setFilterModalOpen] = useState(false);
   const [tag, setTag] = useState('');
-
+  const [isResourceFormOpen, setResourceFormOpen] = useState(false); 
   const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm, tag });
+  const [selectedResourceType, setSelectedResourceType] = useState(null);
+  const removeResourceAction = useAction(removeResource);
+
   const totalPages = data ? Math.ceil(data.totalResources / 10) : 0;
 
   const handleOpenFilterModal = () => setFilterModalOpen(true);
@@ -32,12 +38,34 @@ const ResearchPage: React.FC = () => {
 
   const handleRemove = (resourceId: number) => {
     console.log(`Remove resource with ID: ${resourceId}`);
-    useAction(removeResource, { id: resourceId});
+    removeResourceAction({ id: resourceId });
   }
 
   const toggleSortDirection = () => {
     setSortDirection(prev => prev === "DESC" ? "ASC" : "DESC");
   };
+
+  const toggleResourceForm = () => setResourceFormOpen(!isResourceFormOpen);
+
+  const handleResourceFormSubmit = (resourceData: any) => {
+    // Process the submitted data, possibly sending it to the backend
+    console.log(resourceData);
+    toggleResourceForm(); // Close the form upon submission
+  };
+
+  const resourceTypes = [
+    { type: 'url', label: 'URL' },
+    { type: 'pdf', label: 'PDF' },
+    { type: 'text', label: 'Text' }, // Example icon, change as needed
+    { type: 'doc', label: 'Doc' },
+    { type: 'google_search', label: 'Google Search' },
+  ];
+
+  const handleSelectResourceType = (type: ResourceType) => {
+    setSelectedResourceType(type);
+    setResourceFormOpen(true);
+  };
+
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
@@ -94,10 +122,39 @@ const ResearchPage: React.FC = () => {
         {/* Filter button */}
         <button 
           onClick={handleOpenFilterModal} 
-          className="bg-secondary text-background py-2 px-4 rounded flex items-center"
+          className="bg-secondary text-background py-2 px-4 rounded flex items-center mr-2"
         >
           Filters <FunnelIcon className="ml-2 h-5 w-5" />
         </button>
+        
+        {/* Dropdown menu for selecting resource type */}
+        <Menu as="div" className="relative inline-block text-left">
+          <div>
+            <Menu.Button className="bg-primary hover:bg-secondary text-background py-2 px-4 rounded flex items-center">
+              Create Resource
+            </Menu.Button>
+          </div>
+          <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <div className="py-1">
+              {resourceTypes.map(({ type, label }) => (
+                <Menu.Item key={type}>
+                  {({ active }) => (
+                    <a
+                      href="#"
+                      className={`${
+                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                      } flex items-center px-4 py-2 text-sm`}
+                      onClick={() => handleSelectResourceType(type)}
+                    >
+                      <IconComponent type={type} />
+                      {label}
+                    </a>
+                  )}
+                </Menu.Item>
+              ))}
+            </div>
+          </Menu.Items>
+        </Menu>
       </div>
     </div>
 
@@ -113,21 +170,15 @@ const ResearchPage: React.FC = () => {
         <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
 
-      {/* Filter & Sort Modal */}
+      {/* Resource Form Modal */}
       <SidebarModal 
-          isOpen={isFilterModalOpen} 
-          onClose={handleCloseFilterModal} 
-          title="Filter & Sort"
+        isOpen={isResourceFormOpen} 
+        onClose={() => setResourceFormOpen(false)} 
+        title="Add New Resource"
       >
-          {isFilterModalOpen && (
-              <ResearchFilterSortSidebar 
-                  searchTerm={searchTerm}
-                  sortDirection={sortDirection}
-                  onSearchTermChange={setSearchTerm}
-                  onSortDirectionChange={toggleSortDirection}
-                  onTagChange={setTag}
-              />
-          )}
+        {selectedResourceType && (
+          <ResourceForm resourceType={selectedResourceType} />
+        )}
       </SidebarModal>
     </div>
   );

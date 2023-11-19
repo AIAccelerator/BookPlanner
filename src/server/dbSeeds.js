@@ -60,7 +60,7 @@ export const devSeedResources = async (prismaClient) => {
     const resourceData = {
       title: faker.commerce.productName(),
       description: faker.lorem.paragraph(),
-      type: faker.helpers.arrayElement(['url', 'pdf', 'doc', 'text', 'google_search']),
+      resourceType: faker.helpers.arrayElement(['url', 'pdf', 'doc', 'text', 'google_search']),
       url: faker.internet.url(),
       tags: [
         { name: faker.helpers.arrayElement(firstTags)  },
@@ -108,13 +108,13 @@ async function createBooks(prismaClient, data) {
 }
 
 async function createResource(prismaClient, data) {
-  const { title, description, type, url, tags, userId } = data;
+  const { title, description, resourceType, url, tags, userId } = data;
 
   const newResource = await prismaClient.resource.create({
     data: {
       title,
       description,
-      type,
+      resourceType,
       url,
       user: {
         connect: {
