@@ -9,9 +9,10 @@ interface ResourcesListProps {
   resources: prisma.resource[];
   onTagClick: (tagName: string) => void;
   onRemove: (resourceId: number) => void;
+  onEdit: (resourceId: number) => void;
 }
 
-const ResourcesList: React.FC<ResourcesListProps> = ({ resources, onTagClick, onRemove }) => {
+const ResourcesList: React.FC<ResourcesListProps> = ({ resources, onTagClick, onEdit, onRemove }) => {
 
 
   if (!resources || resources.length === 0) return <div className="empty">No resources found.</div>;
@@ -30,6 +31,7 @@ const ResourcesList: React.FC<ResourcesListProps> = ({ resources, onTagClick, on
           key={resource.id}
           resource={resource}
           onTagClick={onTagClick}
+          onEdit={onEdit}
           onRemove={onRemove}
         />
       ))}

@@ -24,6 +24,7 @@ const ResearchPage: React.FC = () => {
   const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm, tag });
   const [selectedResourceType, setSelectedResourceType] = useState(null);
   const removeResourceAction = useAction(removeResource);
+  const editAction = useAction(removeResource);
 
   const totalPages = data ? Math.ceil(data.totalResources / 10) : 0;
 
@@ -39,6 +40,13 @@ const ResearchPage: React.FC = () => {
   const handleRemove = (resourceId: number) => {
     console.log(`Remove resource with ID: ${resourceId}`);
     removeResourceAction({ id: resourceId });
+  }
+
+  const handleEdit = (resourceId: number) => {
+    console.log(`Edit resource with ID: ${resourceId}`);
+    //editAction({ id: resourceId });
+    toggleResourceForm();
+
   }
 
   const toggleSortDirection = () => {
@@ -163,7 +171,7 @@ const ResearchPage: React.FC = () => {
         <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
       
-      <ResourcesList resources={data?.resources} onTagClick={handleTagClick} onRemove={handleRemove}/>
+      <ResourcesList resources={data?.resources} onTagClick={handleTagClick} onEdit={handleEdit} onRemove={handleRemove}/>
       
       {/* Pagination Controls */}
       <div className="mb-8 flex justify-center">

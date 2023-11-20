@@ -200,54 +200,6 @@ export const createChapter = async (args: CreateChapterArgs, context) => {
   return chapter;
 };
 
-type TagInput = {
-  name: string;
-  id: number;
-};
-
-type CreateResourceArgs = {
-  title: string;
-  description: string;
-  resourceType: string;
-  url: string;
-  userId: number;
-  tags: TagInput[];
-};
-export const createUrlResource = async (args: CreateResourceArgs, context) => {
-  const { url, title, description, resourceType, tags } = args;
-
-  // Ensure the user is logged in
-  if (!context.user) {
-    throw new HttpError(401, 'User not logged in');
-  }
-
-  // Ensure the record is unique
-  const existingResource = await context.entities.Resource.findFirst({ 
-    where: { url }
-  });
-
-  if (existingResource) {
-    // If the resource already exists, throw an error
-    throw new HttpError(409, 'Resource already exists');
-  }
-
-  // If the resource does not exist, create a new one
-  const newResource = await context.entities.Resource.create({
-    data: {
-      url,
-      title,
-      description,
-      resourceType,
-      user: { connect: { id: context.user.id } },
-      tags: {
-        create: tags.map(tag => ({ tag: { connect: { id: tag.id } } })),
-      },
-    },
-  });
-
-  return newResource;
-};
-
 type RemoveResourceArgs = {
   id: number;
 };
@@ -271,3 +223,116 @@ export const removeResource = async (args: RemoveResourceArgs, context) => {
 
   return true;
 }
+
+type CreateResourceArgs = {
+  title: string;
+  description: string;
+  resourceType: string;
+  url: string;
+  userId: number;
+  tags: string[];
+};
+
+
+export const createUrlResource = async (args: CreateResourceArgs, context) => {
+
+  const { title, description, resourceType, url, userId, tags } = args;
+  if (!context.user) {
+    throw new HttpError(401, 'User not logged in');
+  }
+  
+  const resource = await context.entities.Resource.findFirst({ where: { url } });
+
+  if (!resource) {
+    throw new HttpError(404, 'Resource already exist');
+  }
+
+  const newResource = await context.entities.Resource.create({
+    data: {
+      title,
+      description,
+      resourceType,
+      url,
+      user: {
+        connect: {
+          id: context.user.id 
+        }
+      },
+    },
+  });
+  
+  for (const tagName of tags) {
+    let tag = await context.entities.Tag.findUnique({ where: { name: tagName } });
+    if (!tag) {
+      tag = await context.entities.Tag.create({ data: { name: tagName } });
+    }
+  
+    await context.entities.ResourceToTag.create({
+      data: {
+        resourceId: newResource.id,
+        tagId: tag.id
+      }
+    });
+  }
+
+  return newResource;
+};
+
+
+type EditResourceArgs = {
+  id: number; // Assuming we're using the resource's ID to find it
+  title?: string;
+  description?: string;
+  resourceType?: string;
+  url?: string;
+  tags?: string[]; // Tags to update
+};
+
+export const editUrlResource = async (args: EditResourceArgs, context) => {
+  const { id, title, description, resourceType, url, tags } = args;
+
+  if (!context.user) {
+    throw new HttpError(401, 'User not logged in');
+  }
+
+  const resource = await context.entities.Resource.findUnique({ where: { id } });
+
+  if (!resource) {
+    throw new HttpError(404, 'Resource not found');
+  }
+
+  // Check if the user is the owner of the resource
+  if (resource.userId !== context.user.id) {
+    throw new HttpError(403, 'User does not have permission to edit this resource');
+  }
+
+  const updatedResource = await context.entities.Resource.update({
+    where: { id },
+    data: {
+      title: title ?? resource.title,
+      description: description ?? resource.description,
+      resourceType: resourceType ?? resource.resourceType,
+      url: url ?? resource.url,
+    },
+  });
+
+  // Clear existing tags association and re-associate based on the new tags array
+  await context.entities.ResourceToTag.deleteMany({ where: { resourceId: id } });
+
+  for (const tagName of tags || []) {
+    let tag = await context.entities.Tag.findFirst({ where: { name: tagName } });
+    if (!tag) {
+      tag = await context.entities.Tag.create({ data: { name: tagName } });
+    }
+
+    await context.entities.ResourceToTag.create({
+      data: {
+        resourceId: updatedResource.id,
+        tagId: tag.id,
+      },
+    });
+  }
+
+  return updatedResource;
+};
+

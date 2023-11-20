@@ -259,8 +259,14 @@ action createChapter {
 
 action createUrlResource {
   fn: import { createUrlResource } from "@server/actions.js",
-  entities: [User, Resource],
+  entities: [User, Resource, Tag, ResourceToTag],
 }
+
+action editUrlResource {
+  fn: import { editUrlResource } from "@server/actions.js",
+  entities: [User, Resource, Tag, ResourceToTag],
+}
+
 
 action removeResource {
   fn: import { removeResource } from "@server/actions.js",

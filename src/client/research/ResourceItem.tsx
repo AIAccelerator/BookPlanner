@@ -8,17 +8,19 @@ import IconComponent from './IconComponent';
 
 interface ResourceItemProps {
   resource: any; // Replace 'any' with the actual type of your resource
+  onEdit: (id: number) => void;
   onRemove: (id: number) => void;
   onTagClick: (tagName: string) => void;
 }
 
-const ResourceItem: React.FC<ResourceItemProps> = ({ resource, onRemove, onTagClick}) => {
+const ResourceItem: React.FC<ResourceItemProps> = ({ resource, onEdit, onRemove, onTagClick}) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const confirmRemove = () => {
     onRemove(resource.id);
     setIsDialogOpen(false);
   };
+
   const openConfirmationDialog = () => {
     setIsDialogOpen(true);
   };
@@ -73,7 +75,7 @@ const ResourceItem: React.FC<ResourceItemProps> = ({ resource, onRemove, onTagCl
                       className={`${
                         active ? 'bg-violet-500 text-white' : 'text-gray-900'
                       } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                      onClick={() => console.log('Edit action here')}
+                      onClick={() => onEdit(resource.id)}
                     >
                       <PencilSquareIcon
                         className="w-5 h-5 mr-2"

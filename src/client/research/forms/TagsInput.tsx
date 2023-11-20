@@ -23,10 +23,23 @@ const TagsInput: React.FC<TagsInputProps> = ({ onTagsChange }) => {
         setInput(e.target.value);
     };
 
-    const handleTagSelect = (tag: string) => {
-        if (!selectedTags.includes(tag)) {
-            setSelectedTags(prevTags => [...prevTags, tag]);
-            onTagsChange([...selectedTags, tag]);
+    const handleTagSelect = (tag) => {
+        const tagName = typeof tag === 'object' ? tag.name : tag;
+        if (!selectedTags.includes(tagName)) {
+            const updatedTags = [...selectedTags, tagName];
+            setSelectedTags(updatedTags);
+            onTagsChange(updatedTags);
+        }
+        setInput('');
+        setShowSuggestions(false);
+    };
+
+    const addNewTag = () => {
+        const newTag = input.trim();
+        if (newTag && !selectedTags.includes(newTag)) {
+            const updatedTags = [...selectedTags, newTag];
+            setSelectedTags(updatedTags);
+            onTagsChange(updatedTags);
         }
         setInput('');
         setShowSuggestions(false);
@@ -61,26 +74,31 @@ const TagsInput: React.FC<TagsInputProps> = ({ onTagsChange }) => {
                     ) : error ? (
                         <div>Error fetching tags</div>
                     ) : (
-                        tagsData?.tags.map((tag, index) => (
-                            <div key={`${tag.id}-${index}`} className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleTagSelect(tag)}>
-                                {tag.name}
-                            </div>
-                        ))
+                        <>
+                            {tagsData?.tags.map((tag, index) => (
+                                <div key={`${tag.id}-${index}`} className="p-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleTagSelect(tag)}>
+                                    {tag.name}
+                                </div>
+                            ))}
+                            {input && !tagsData?.tags.some(tag => tag.name === input) && (
+                                <div className="p-2 hover:bg-gray-100 cursor-pointer" onClick={addNewTag}>
+                                    Add "{input}" as a new tag
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </Transition>
             <div className="flex flex-wrap mt-2">
                 {selectedTags.map((tag, index) => (
-                    <span key={`${tag.id}-${index}`} className="flex items-center m-1 bg-secondary text-white text-xs font-semibold mr-2 px-2.5 py-0.5 rounded hover:bg-primary">
-                        {tag.name}
+                    <span key={`${tag}-${index}`} className="flex items-center m-1 bg-secondary text-white text-xs font-semibold mr-2 px-2.5 py-0.5 rounded hover:bg-primary">
+                        {tag}
                         <button type="button" className="ml-1 text-accent" onClick={() => removeTag(tag)}>
                             <XMarkIcon className="h-4 w-4" />
                         </button>
                     </span>
                 ))}
             </div>
-
-
         </div>
     );
 };
