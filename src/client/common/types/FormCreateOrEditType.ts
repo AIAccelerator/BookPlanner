@@ -1,0 +1,1 @@
+type FormCreateOrEditType = 'create' | 'edit';

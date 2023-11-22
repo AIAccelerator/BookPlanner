@@ -16,6 +16,9 @@ import ResourceFilters from './resource/ResourceFilters';
 import { ResourceCreateButton } from './resource/ResourceCreateButton';
 import ResearchFilterSortSidebar from './resource/ResearchFilterSortSidebar';
 import { ResoruceHead } from './resource/ResourceHead';
+import { FormData } from '../common/types/FormType';
+import FormCreateOrEdit from '../common/types/FormCreateOrEdit';
+import prisma from '@wasp/prisma';
 
 const ResearchPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,9 +26,12 @@ const ResearchPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [isFilterModalOpen, setFilterModalOpen] = useState(false);
   const [tag, setTag] = useState('');
-  const [isResourceFormOpen, setResourceFormOpen] = useState(false); 
-  const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm, tag });
+  const [isResourceFormOpen, setResourceFormOpen] = useState(false);   
   const [selectedResourceType, setSelectedResourceType] = useState(null);
+  const [mode, setMode] = useState<FormCreateOrEdit>('create');
+  const [resource, setResource] = useState<prisma.resource | null>(null);
+
+  const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm, tag });
   const removeResourceAction = useAction(removeResource);
   const editAction = useAction(removeResource);
 
@@ -47,6 +53,8 @@ const ResearchPage: React.FC = () => {
 
   const handleEdit = (resourceId: number) => {
     console.log(`Edit resource with ID: ${resourceId}`);
+    setMode('edit');
+    setResource(data.resources.find(resource => resource.id === resourceId));
     //editAction({ id: resourceId });
     toggleResourceForm();
 
@@ -67,6 +75,7 @@ const ResearchPage: React.FC = () => {
   const handleSelectResourceType = (type: ResourceType) => {
     setSelectedResourceType(type);
     setResourceFormOpen(true);
+    setMode('create');
   };
 
 
@@ -108,7 +117,7 @@ const ResearchPage: React.FC = () => {
         title="Add New Resource"
       >
         {selectedResourceType && (
-          <ResourceForm resourceType={selectedResourceType} />
+          <ResourceForm resourceType={selectedResourceType} resource={resource} mode={mode} onSubmit={handleResourceFormSubmit}  />
         )}
       </SidebarModal>        
       
