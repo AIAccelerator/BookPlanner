@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAction } from '@wasp/actions';
 import createUrlResource from '@wasp/actions/createUrlResource';
+import editUrlResource from '@wasp/actions/editUrlResource';
+import type { EditUrlResource } from '@wasp/actions/types';
 import TagsInput from './TagsInput';
+import prisma from '@wasp/prisma';
 
 type UrlFormData = {
   url: string;
@@ -10,33 +13,41 @@ type UrlFormData = {
   description?: string;
 };
 
-const UrlForm: React.FC = () => {
+type UrlFormInput = {
+  mode: 'create' | 'edit';
+  resource?: prisma.resource;
+  onSubmit: (data: UrlFormData) => void;
+};
+
+const UrlForm: React.FC<UrlFormInput> = ({ mode, resource, onSubmit }) => {
+
   const [selectedTags, setSelectedTags] = useState<string[]>([]); 
-  const { register, handleSubmit, formState: { errors } } = useForm<UrlFormData>();
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const createUrl = useAction(createUrlResource);
-  
-  const onSubmit = async (data: UrlFormData) => {
-    try {
-      await createUrl({
-        url: data.url,
-        title: data.title,
-        description: data.description,
-        resourceType: 'url',
-        tags: selectedTags
-      });
-      setSuccessMessage('Resource created successfully');
-      setErrorMessage(null);
-    } catch (error) {
-      setErrorMessage(error.message);
-      setSuccessMessage(null);
+  const editUrl = useAction(editUrlResource);
+      
+  useEffect(() => {
+    if (mode === 'edit' && resource) {
+      setValue('title', resource.title);
+      setValue('description', resource.description || '');
+      setValue('url', resource.url);
+      const tags = transformTags(resource.tags);
+      setSelectedTags(tags);
+      setValue('tags', tags);
     }
-  };
+  }, [mode, resource, setValue]);
+
   const handleTagsChange = (selectedTags: string[]) => {
-    console.log('Selected Tags:', selectedTags);
+    
     setSelectedTags(selectedTags);
+    setValue('tags', selectedTags);
+  };
+  
+  const transformTags = (tags: prisma.resourcetotag) => {    
+    return tags ? tags.map(tag => tag.tag.name) : [];
   };
 
   const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
@@ -83,7 +94,18 @@ const UrlForm: React.FC = () => {
       
       <div>
         <label htmlFor="tags" className="block text-sm font-medium text-primary">Tags</label>
-        <TagsInput onTagsChange={handleTagsChange} />
+        {mode == 'edit' && selectedTags.length > 0 &&
+           <TagsInput onTagsChange={handleTagsChange} tags={selectedTags} />          
+        }
+
+        {mode == 'edit' && selectedTags.length == 0 &&
+          <TagsInput onTagsChange={handleTagsChange} tags={selectedTags} />
+        }
+
+        {mode == 'create' &&
+          <TagsInput onTagsChange={handleTagsChange} tags={[]} />
+        }
+        <input id="tags-hidden" type="hidden" {...register('tags', { value: selectedTags })} />
       </div>
 
       <button type="submit" className="py-2 px-4 bg-gradient-primary bg-primary text-white rounded shadow-primary hover:bg-secondary">Submit</button>

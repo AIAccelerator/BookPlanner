@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import prisma from '@wasp/prisma';
 
 type PdfFormData = {
   file: FileList;
@@ -7,10 +8,28 @@ type PdfFormData = {
   description?: string;
 };
 
-const PdfForm: React.FC = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<PdfFormData>();
+type PdfFormInput = {
+  mode: 'create' | 'edit';
+  resource?: prisma.resource;
+};
+
+const PdfForm: React.FC<PdfFormInput> = ({mode, resource}) => {
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<PdfFormData>();
+
+    // Set default values for edit mode
+    useEffect(() => {
+      if (mode === 'edit' && resource) {
+        setValue('title', resource.title);
+        setValue('description', resource.description || '');
+        // Note: File input can't be set programmatically due to security reasons
+      }
+    }, [mode, resource, setValue]);
 
   const onSubmit = (data: PdfFormData) => {
+    if (mode === 'edit') {
+    } else {
+     
+    }
     console.log(data);
   };
 

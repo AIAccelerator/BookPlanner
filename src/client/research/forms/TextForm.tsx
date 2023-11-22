@@ -1,15 +1,25 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import prisma from '@wasp/prisma';
 
 type TextFormData = {
   content: string;
   title: string;
 };
 
-const TextForm: React.FC = () => {
+type TextFormInput = {
+  mode: 'create' | 'edit';
+  resource?: prisma.resource;
+};
+
+const TextForm: React.FC<TextFormInput> = ({mode, resource}) => {
   const { register, handleSubmit, formState: { errors } } = useForm<TextFormData>();
 
   const onSubmit = (data: TextFormData) => {
+    if (mode === 'edit') {
+    } else {
+
+    }
     console.log(data);
   };
 

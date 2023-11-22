@@ -1,10 +1,10 @@
 import React, { useState, Fragment } from 'react';
 import { TrashIcon, LinkIcon, DocumentTextIcon, DocumentIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { Tag } from '@prisma/client';
-import Tooltip from '../common/Tooltip';
+import Tooltip from '../../common/Tooltip';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import { EllipsisHorizontalIcon, PencilSquareIcon } from '@heroicons/react/24/solid';
-import IconComponent from './IconComponent';
+import IconComponent from '../IconComponent';
 
 interface ResourceItemProps {
   resource: any; // Replace 'any' with the actual type of your resource

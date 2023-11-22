@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import SearchInput from '../common/SearchInput';
+import SearchInput from '../../common/SearchInput';
 
 type ResearchFilterSortSidebarProps = {
     searchTerm: string;

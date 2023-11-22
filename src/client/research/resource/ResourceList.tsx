@@ -3,7 +3,7 @@ import { Transition } from '@headlessui/react';
 import prisma from '@wasp/prisma';
 import { TrashIcon, LinkIcon, DocumentTextIcon, DocumentIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import ResourceItem from './ResourceItem';
-import Tooltip from '../common/Tooltip';
+import Tooltip from '../../common/Tooltip';
 
 interface ResourcesListProps {
   resources: prisma.resource[];
@@ -12,7 +12,7 @@ interface ResourcesListProps {
   onEdit: (resourceId: number) => void;
 }
 
-const ResourcesList: React.FC<ResourcesListProps> = ({ resources, onTagClick, onEdit, onRemove }) => {
+const ResourceList: React.FC<ResourcesListProps> = ({ resources, onTagClick, onEdit, onRemove }) => {
 
 
   if (!resources || resources.length === 0) return <div className="empty">No resources found.</div>;
@@ -39,4 +39,4 @@ const ResourcesList: React.FC<ResourcesListProps> = ({ resources, onTagClick, on
   );
 };
 
-export default ResourcesList;
+export default ResourceList;

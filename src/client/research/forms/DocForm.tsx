@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import prisma from '@wasp/prisma';
 
 type DocFormData = {
   file: FileList;
@@ -7,10 +8,19 @@ type DocFormData = {
   description?: string;
 };
 
-const DocForm: React.FC = () => {
+type DocFormInput = {
+  mode: 'create' | 'edit';
+  resource: prisma.resource;
+};
+
+const DocForm: React.FC<DocFormInput> = ({mode, resource}) => {
   const { register, handleSubmit, formState: { errors } } = useForm<DocFormData>();
 
   const onSubmit = (data: DocFormData) => {
+    if (mode === 'edit') {
+    } else {
+
+    }
     console.log(data);
     // Process the submitted data here
   };

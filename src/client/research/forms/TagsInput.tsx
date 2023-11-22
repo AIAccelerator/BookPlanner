@@ -6,9 +6,10 @@ import { Transition } from '@headlessui/react';
 
 type TagsInputProps = {
     onTagsChange: (selectedTags: string[]) => void;
+    tags?: string[];
 };
 
-const TagsInput: React.FC<TagsInputProps> = ({ onTagsChange }) => {
+const TagsInput: React.FC<TagsInputProps> = ({ onTagsChange, tags }) => {
     const [input, setInput] = useState('');
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -17,6 +18,7 @@ const TagsInput: React.FC<TagsInputProps> = ({ onTagsChange }) => {
 
     useEffect(() => {
         setShowSuggestions(input.length > 0);
+        setSelectedTags(tags || []);
     }, [input]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

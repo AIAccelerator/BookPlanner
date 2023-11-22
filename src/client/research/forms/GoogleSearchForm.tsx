@@ -1,15 +1,25 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import prisma from '@wasp/prisma';
 
 type GoogleSearchFormData = {
   searchQuery: string;
   description?: string;
 };
 
-const GoogleSearchForm: React.FC = () => {
+type GoogleSearchFormInput = {
+  mode: 'create' | 'edit';
+  resource: prisma.resource;
+};
+
+const GoogleSearchForm: React.FC<GoogleSearchFormInput> = ({mode, resource}) => {
   const { register, handleSubmit, formState: { errors } } = useForm<GoogleSearchFormData>();
 
   const onSubmit = (data: GoogleSearchFormData) => {
+    if (mode === 'edit') {
+    } else {
+      
+    }
     console.log(data);
     // Process the submitted data here
   };
