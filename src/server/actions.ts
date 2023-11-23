@@ -288,7 +288,7 @@ type EditResourceArgs = {
   tags?: string[]; // Tags to update
 };
 
-export const editUrlResource = async (args: EditResourceArgs, context) => {
+export const editResource = async (args: EditResourceArgs, context) => {
   const { id, title, description, resourceType, url, tags } = args;
 
   if (!context.user) {
