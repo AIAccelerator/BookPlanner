@@ -1,22 +1,19 @@
 import React, { useState } from 'react';
 import { useQuery } from '@wasp/queries';
 import { useAction } from '@wasp/actions';
-import getResources from '@wasp/queries/getResources';
-import removeResource from '@wasp/actions/removeResource';
-import { FunnelIcon, XMarkIcon, DocumentTextIcon, DocumentPlusIcon, LinkIcon, DocumentIcon, MagnifyingGlassPlusIcon } from '@heroicons/react/24/solid';
 import Pagination from '../common/Pagination';
 import SidebarModal from '../common/SidebarModal';
 import ResourceList from './resource/ResourceList';
-import Tooltip from '../common/Tooltip';
-import { Transition, Menu } from '@headlessui/react';
 import ResourceForm from './forms/ResourceForm';
 import ResourceType from '../common/types/ResourceType';
-import IconComponent from './IconComponent';
-import ResourceFilters from './resource/ResourceFilters';
-import { ResourceCreateButton } from './resource/ResourceCreateButton';
 import ResearchFilterSortSidebar from './resource/ResearchFilterSortSidebar';
 import { ResoruceHead } from './resource/ResourceHead';
-import { FormData } from '../common/types/FormType';
+
+import getResources from '@wasp/queries/getResources';
+import removeResource from '@wasp/actions/removeResource';
+import editResource from '@wasp/actions/editResource';
+
+
 import type FormCreateOrEdit from '../common/types/FormCreateOrEditType';
 import prisma from '@wasp/prisma';
 
@@ -27,7 +24,7 @@ const ResearchPage: React.FC = () => {
   const [isFilterModalOpen, setFilterModalOpen] = useState(false);
   const [tag, setTag] = useState('');
   const [isResourceFormOpen, setResourceFormOpen] = useState(false);   
-  const [selectedResourceType, setSelectedResourceType] = useState(null);
+  const [selectedResourceType, setSelectedResourceType] = useState<ResourceType | null>(null);
   const [mode, setMode] = useState<FormCreateOrEdit>('create');
   const [resource, setResource] = useState<prisma.resource | null>(null);
 
@@ -51,25 +48,29 @@ const ResearchPage: React.FC = () => {
     removeResourceAction({ id: resourceId });
   }
 
-  const handleEdit = (resourceId: number) => {
+  const handleEdit = (resourceId: number) => {    
     console.log(`Edit resource with ID: ${resourceId}`);
+    if (!data) 
+      return;
+
+    const selectedResource = data.resources.find(resource => resource.id === resourceId);
+
+    if (!selectedResource)
+      return;
+
     setMode('edit');
-    setResource(data.resources.find(resource => resource.id === resourceId));    
-    toggleResourceForm();
+    setResource(selectedResource);
+    setSelectedResourceType(selectedResource.resourceType);
+    toggleResourceForm();   
 
   }
 
-  const toggleSortDirection = () => {
-    setSortDirection(prev => prev === "DESC" ? "ASC" : "DESC");
-  };
-
   const toggleResourceForm = () => setResourceFormOpen(!isResourceFormOpen);
 
-  const handleResourceFormSubmit = (resourceData: any) => {
-    // Process the submitted data, possibly sending it to the backend
+  const handleResourceFormSubmit = (resourceData: any) => {    
     console.log(resourceData);
-    //editAction(resourceData);
-    toggleResourceForm(); // Close the form upon submission
+    editResource({ ...resourceData, id: resource?.id });
+    toggleResourceForm();
   };
 
   const handleSelectResourceType = (type: ResourceType) => {
