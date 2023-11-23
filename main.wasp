@@ -262,8 +262,8 @@ action createUrlResource {
   entities: [User, Resource, Tag, ResourceToTag],
 }
 
-action editUrlResource {
-  fn: import { editUrlResource } from "@server/actions.js",
+action editResource {
+  fn: import { editResource } from "@server/actions.js",
   entities: [User, Resource, Tag, ResourceToTag],
 }
 
