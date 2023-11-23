@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useAction } from '@wasp/actions';
-import createUrlResource from '@wasp/actions/createUrlResource';
-import editUrlResource from '@wasp/actions/editUrlResource';
-import type { EditUrlResource } from '@wasp/actions/types';
 import TagsInput from './TagsInput';
 import prisma from '@wasp/prisma';
 
@@ -25,9 +21,6 @@ const UrlForm: React.FC<UrlFormInput> = ({ mode, resource, onSubmit }) => {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const createUrl = useAction(createUrlResource);
-  const editUrl = useAction(editUrlResource);
       
   useEffect(() => {
     if (mode === 'edit' && resource) {

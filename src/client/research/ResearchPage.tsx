@@ -17,7 +17,7 @@ import { ResourceCreateButton } from './resource/ResourceCreateButton';
 import ResearchFilterSortSidebar from './resource/ResearchFilterSortSidebar';
 import { ResoruceHead } from './resource/ResourceHead';
 import { FormData } from '../common/types/FormType';
-import FormCreateOrEdit from '../common/types/FormCreateOrEdit';
+import type FormCreateOrEdit from '../common/types/FormCreateOrEditType';
 import prisma from '@wasp/prisma';
 
 const ResearchPage: React.FC = () => {
@@ -33,7 +33,7 @@ const ResearchPage: React.FC = () => {
 
   const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm, tag });
   const removeResourceAction = useAction(removeResource);
-  const editAction = useAction(removeResource);
+  
 
   const totalPages = data ? Math.ceil(data.totalResources / 10) : 0;
 
@@ -54,8 +54,7 @@ const ResearchPage: React.FC = () => {
   const handleEdit = (resourceId: number) => {
     console.log(`Edit resource with ID: ${resourceId}`);
     setMode('edit');
-    setResource(data.resources.find(resource => resource.id === resourceId));
-    //editAction({ id: resourceId });
+    setResource(data.resources.find(resource => resource.id === resourceId));    
     toggleResourceForm();
 
   }
@@ -69,6 +68,7 @@ const ResearchPage: React.FC = () => {
   const handleResourceFormSubmit = (resourceData: any) => {
     // Process the submitted data, possibly sending it to the backend
     console.log(resourceData);
+    //editAction(resourceData);
     toggleResourceForm(); // Close the form upon submission
   };
 
