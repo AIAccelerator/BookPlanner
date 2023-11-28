@@ -32,8 +32,8 @@ const ResourceItem: React.FC<ResourceItemProps> = ({ resource, onEdit, onRemove,
   return (
     <div className="border rounded-lg p-4 flex justify-between items-center group hover:bg-gray-100">
       <div className="flex items-center">
-        <Tooltip content={resource.type}>
-          <IconComponent type={resource.type} />
+        <Tooltip content={resource.resourceType}>
+          {resource && <IconComponent type={resource.resourceType} />}
         </Tooltip>
         <div>
           <h3 className="font-semibold inline-block align-middle">{resource.title}</h3>
