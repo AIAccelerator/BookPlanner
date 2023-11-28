@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useForm } from 'react-hook-form';
 import prisma from '@wasp/prisma';
+import TagsInput from './TagsInput';
 
 type GoogleSearchFormData = {
   searchQuery: string;
@@ -10,18 +11,32 @@ type GoogleSearchFormData = {
 type GoogleSearchFormInput = {
   mode: 'create' | 'edit';
   resource: prisma.resource;
+  onSubmit: (data: GoogleSearchFormData) => void;
 };
 
-const GoogleSearchForm: React.FC<GoogleSearchFormInput> = ({mode, resource}) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<GoogleSearchFormData>();
+const GoogleSearchForm: React.FC<GoogleSearchFormInput> = ({mode, resource, onSubmit}) => {
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<GoogleSearchFormData>();
+  const [selectedTags, setSelectedTags] = useState<string[]>([]); 
 
-  const onSubmit = (data: GoogleSearchFormData) => {
-    if (mode === 'edit') {
-    } else {
-      
+  useEffect(() => {
+    if (mode === 'edit' && resource) {
+      setValue('title', resource.title);
+      setValue('description', resource.description || '');
+      setValue('url', resource.url);
+      const tags = transformTags(resource.tags);
+      setSelectedTags(tags);
+      setValue('tags', tags);
     }
-    console.log(data);
-    // Process the submitted data here
+  }, [mode, resource, setValue]);
+
+  const handleTagsChange = (selectedTags: string[]) => {
+    
+    setSelectedTags(selectedTags);
+    setValue('tags', selectedTags);
+  };
+  
+  const transformTags = (tags: prisma.resourcetotag) => {    
+    return tags ? tags.map(tag => tag.tag.name) : [];
   };
 
   return (
@@ -30,7 +45,7 @@ const GoogleSearchForm: React.FC<GoogleSearchFormInput> = ({mode, resource}) => 
         <label htmlFor="searchQuery" className="block text-sm font-medium text-gray-700">Search Query</label>
         <input 
           id="searchQuery" 
-          {...register('searchQuery', { required: 'This field is required' })}
+          {...register('url', { required: 'This field is required' })}
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
         {errors.searchQuery && <span className="text-red-500 text-xs">{errors.searchQuery.message}</span>}
@@ -44,7 +59,21 @@ const GoogleSearchForm: React.FC<GoogleSearchFormInput> = ({mode, resource}) => 
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
       </div>
+      <div>
+        <label htmlFor="tags" className="block text-sm font-medium text-primary">Tags</label>
+        {mode == 'edit' && selectedTags.length > 0 &&
+           <TagsInput onTagsChange={handleTagsChange} tags={selectedTags} />          
+        }
 
+        {mode == 'edit' && selectedTags.length == 0 &&
+          <TagsInput onTagsChange={handleTagsChange} tags={selectedTags} />
+        }
+
+        {mode == 'create' &&
+          <TagsInput onTagsChange={handleTagsChange} tags={[]} />
+        }
+        <input id="tags-hidden" type="hidden" {...register('tags', { value: selectedTags })} />
+      </div>
       <button type="submit" className="py-2 px-4 bg-blue-500 text-white rounded">Submit</button>
     </form>
   );
