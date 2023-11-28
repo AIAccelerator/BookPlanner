@@ -7,6 +7,7 @@ type UrlFormData = {
   url: string;
   title: string;
   description?: string;
+  tags: string[];
 };
 
 type UrlFormInput = {
