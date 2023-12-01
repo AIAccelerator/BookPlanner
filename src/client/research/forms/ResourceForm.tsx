@@ -13,16 +13,17 @@ interface ResourceFormProps {
   mode: 'create' | 'edit';
   resource?: prisma.resource;
   onSubmit: (data: FormData) => void;
+  onClickFile?: () => void;
 }
 
-const ResourceForm: React.FC<ResourceFormProps> = ({ resourceType, mode, resource, onSubmit }) => {
+const ResourceForm: React.FC<ResourceFormProps> = ({ resourceType, mode, resource, onSubmit, onClickFile }) => {
 
   const renderForm = () => {
     switch (resourceType) {
       case 'url':
         return <UrlForm mode={mode} resource={resource} onSubmit={onSubmit} />;
       case 'pdf':
-        return <PdfForm mode={mode} resource={resource} onSubmit={onSubmit} />;
+        return <PdfForm mode={mode} resource={resource} onSubmit={onSubmit} onClickFile={onClickFile}/>;
       case 'text':
         return <TextForm mode={mode} resource={resource} onSubmit={onSubmit} />;
       case 'doc':

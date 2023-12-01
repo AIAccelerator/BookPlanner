@@ -6,15 +6,19 @@ import generateSasToken from "@wasp/queries/generateSasToken";
 import { BlobServiceClient } from '@azure/storage-blob';
 import UploadedFileType from '../../common/types/UploadedFileType';
 import { FormData } from '../../common/types/FormType';
+import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
+
+const azureBlobBaseUrl = `https://${import.meta.env.REACT_APP_AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net/`;
 
 type PdfFormInput = {
   mode: 'create' | 'edit';
   resource?: prisma.resource;
   onSubmit: (data: FormData) => void;
+  onClickFile?: () => void;
 };
 
 
-const PdfForm: React.FC<PdfFormInput> = ({mode, resource, onSubmit}) => {
+const PdfForm: React.FC<PdfFormInput> = ({mode, resource, onSubmit, onClickFile}) => {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [azureSasToken, setAzureSasToken] = useState<string>('');
@@ -41,12 +45,12 @@ const PdfForm: React.FC<PdfFormInput> = ({mode, resource, onSubmit}) => {
 
     const uploadFileToBlob = async (data) => {
       if (!(data.file && data.file.length > 0)) {
-        return;
+        return onSubmit(data);
       }
     
       const file = data.file[0];
-      const uploadedFile = await fileUpload(file, 'bookgpt');
-      onSubmit({...data, file: { filePath: uploadedFile.filePath, fileName: uploadedFile.fileName}});
+      const uploadedFile = await fileUpload(file, import.meta.env.REACT_APP_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME);
+      onSubmit({...data, fileName: uploadedFile.fileName, filePath: uploadedFile.filePath});
     };
     
     async function fileUpload(file: File, containerName: string): Promise<UploadedFileType> {
@@ -54,13 +58,13 @@ const PdfForm: React.FC<PdfFormInput> = ({mode, resource, onSubmit}) => {
       try {
         let sasToken = await generateSasToken();
         setAzureSasToken(sasToken.sasToken);
-        const blobServiceClient = new BlobServiceClient(`https://bookgpt.blob.core.windows.net/${containerName}?${sasToken.sasToken}`);
+        const blobServiceClient = new BlobServiceClient(`${azureBlobBaseUrl}${containerName}?${sasToken.sasToken}`);
         const containerClient = blobServiceClient.getContainerClient(containerName);
         const blobClient = containerClient.getBlockBlobClient(file.name);
         const options = { blobHTTPHeaders: { blobContentType: file.type } };
-        const response = await blobClient.uploadData(file, options);
+        await blobClient.uploadData(file, options);
         
-        return {fileName: file.name, filePath: blobClient.url};
+        return {fileName: file.name, filePath: blobClient.url.split('?')[0]};
       } catch (error) {
         console.error("Error uploading file:", error);
       }
@@ -74,6 +78,10 @@ const PdfForm: React.FC<PdfFormInput> = ({mode, resource, onSubmit}) => {
       <div>
         <label htmlFor="file" className="block text-sm font-medium text-gray-700">PDF File</label>
         <input id="file" type="file" {...register('file', { required: mode === 'create'})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
+        {mode == 'edit' && resource && resource.filePath && 
+          <a href='#!' onClick={onClickFile} className="text-blue-500">{resource.fileName}</a>
+        }
+
         {errors.file && <span className="text-red-500 text-xs">This field is required</span>}
       </div>
 

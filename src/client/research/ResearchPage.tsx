@@ -8,6 +8,8 @@ import ResourceForm from './forms/ResourceForm';
 import ResourceType from '../common/types/ResourceType';
 import ResearchFilterSortSidebar from './resource/ResearchFilterSortSidebar';
 import { ResoruceHead } from './resource/ResourceHead';
+import { Dialog } from '@headlessui/react';
+import DocView from '@cyntler/react-doc-viewer';
 
 import getResources from '@wasp/queries/getResources';
 import removeResource from '@wasp/actions/removeResource';
@@ -27,6 +29,7 @@ const ResearchPage: React.FC = () => {
   const [selectedResourceType, setSelectedResourceType] = useState<ResourceType | null>(null);
   const [mode, setMode] = useState<FormCreateOrEdit>('create');
   const [resource, setResource] = useState<prisma.resource | null>(null);
+  const [fileModalOpen, setFileModalOpen] = useState(false);
 
   const { data, error, isLoading } = useQuery(getResources, { page, limit: 10, sort: sortDirection, searchTerm, tag });
   const removeResourceAction = useAction(removeResource);
@@ -79,6 +82,11 @@ const ResearchPage: React.FC = () => {
     setMode('create');
   };
 
+  const handleClickFileModal = () => {
+    setResourceFormOpen(false);
+    setFileModalOpen(true);
+  };
+
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
@@ -118,7 +126,7 @@ const ResearchPage: React.FC = () => {
         title="Add New Resource"
       >
         {selectedResourceType && (
-          <ResourceForm resourceType={selectedResourceType} resource={resource} mode={mode} onSubmit={handleResourceFormSubmit}  />
+          <ResourceForm resourceType={selectedResourceType} resource={resource} mode={mode} onSubmit={handleResourceFormSubmit} onClickFile={handleClickFileModal}  />
         )}
       </SidebarModal>        
       
@@ -136,6 +144,36 @@ const ResearchPage: React.FC = () => {
           onTagChange={setTag}
         />
       </SidebarModal>
+
+      {fileModalOpen && resource && (
+      <Dialog open={fileModalOpen} onClose={() => setFileModalOpen(false)}>
+        <div className="fixed inset-0 bg-black bg-opacity-30"></div> {/* Overlay */}
+
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="w-full max-w-md rounded bg-white p-6">
+            <Dialog.Title className="text-lg font-medium">Document Viewer</Dialog.Title>
+            <Dialog.Description>
+              This is your document.
+            </Dialog.Description>
+            
+            {/* DocView Component */}
+            <DocView
+              documents={[{uri: resource.filePath}]} // Replace with the URL of your document
+              // Add other props as needed
+            />
+
+            <button 
+              className="mt-4 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700"
+              onClick={() => setFileModalOpen(false)}
+            >
+              Close
+            </button>
+          </Dialog.Panel>
+        </div>
+      </Dialog>
+      )}
+
+      
     
     </div>
   );

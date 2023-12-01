@@ -285,11 +285,13 @@ type EditResourceArgs = {
   description?: string;
   resourceType?: string;
   url?: string;
+  fileName?: string;
+  filePath?: string;
   tags?: string[]; // Tags to update
 };
 
 export const editResource = async (args: EditResourceArgs, context) => {
-  const { id, title, description, resourceType, url, tags } = args;
+  const { id, title, description, resourceType, url, tags, fileName, filePath } = args;
 
   if (!context.user) {
     throw new HttpError(401, 'User not logged in');
@@ -313,6 +315,8 @@ export const editResource = async (args: EditResourceArgs, context) => {
       description: description ?? resource.description,
       resourceType: resourceType ?? resource.resourceType,
       url: url ?? resource.url,
+      fileName: fileName ?? resource.fileName,
+      filePath: filePath ?? resource.filePath,
     },
   });
 

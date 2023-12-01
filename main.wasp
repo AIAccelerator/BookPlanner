@@ -75,7 +75,8 @@ app book_planner {
     ("react-dropzone", "^14.2"),
     ("multer", "^1.4"),
     ("@azure/storage-blob", "12.17.0"),
-    ("moment-timezone", "0.5")
+    ("moment-timezone", "0.5"),
+    ("@cyntler/react-doc-viewer", "1.14.1")
   ]
 }
 
@@ -152,6 +153,8 @@ entity Resource {=psl
   id          Int      @id @default(autoincrement())
   title       String
   description String
+  fileName String?
+  filePath String?
   resourceType        String
   userId      Int      // Foreign key to relate a resource to a user
   user User   @relation(fields: [userId], references: [id], onDelete: Cascade) // Relationship to User entity
