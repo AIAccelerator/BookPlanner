@@ -10,9 +10,10 @@ interface ResourcesListProps {
   onTagClick: (tagName: string) => void;
   onRemove: (resourceId: number) => void;
   onEdit: (resourceId: number) => void;
+  onClickFile?: () => void;
 }
 
-const ResourceList: React.FC<ResourcesListProps> = ({ resources, onTagClick, onEdit, onRemove }) => {
+const ResourceList: React.FC<ResourcesListProps> = ({ resources, onTagClick, onEdit, onRemove, onClickFile }) => {
 
 
   if (!resources || resources.length === 0) return <div className="empty">No resources found.</div>;
@@ -33,6 +34,7 @@ const ResourceList: React.FC<ResourcesListProps> = ({ resources, onTagClick, onE
           onTagClick={onTagClick}
           onEdit={onEdit}
           onRemove={onRemove}
+          onClickFile={onClickFile}
         />
       ))}
     </Transition>

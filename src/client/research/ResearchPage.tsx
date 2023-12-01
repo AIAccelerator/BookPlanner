@@ -112,7 +112,7 @@ const ResearchPage: React.FC = () => {
         <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
       
-      <ResourceList resources={data?.resources} onTagClick={handleTagClick} onEdit={handleEdit} onRemove={handleRemove}/>
+      <ResourceList resources={data?.resources} onTagClick={handleTagClick} onEdit={handleEdit} onRemove={handleRemove} onClickFile={handleClickFileModal}/>
       
       
       <div className="mb-8 flex justify-center">
@@ -146,35 +146,58 @@ const ResearchPage: React.FC = () => {
       </SidebarModal>
 
       {fileModalOpen && resource && (
-      <Dialog open={fileModalOpen} onClose={() => setFileModalOpen(false)}>
-        <div className="fixed inset-0 bg-black bg-opacity-30"></div> {/* Overlay */}
-
-        <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="w-full max-w-md rounded bg-white p-6">
-            <Dialog.Title className="text-lg font-medium">Document Viewer</Dialog.Title>
-            <Dialog.Description>
-              This is your document.
-            </Dialog.Description>
-            
-            {/* DocView Component */}
-            <DocView
-              documents={[{uri: resource.filePath}]} // Replace with the URL of your document
-              // Add other props as needed
-            />
-
-            <button 
-              className="mt-4 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700"
-              onClick={() => setFileModalOpen(false)}
-            >
-              Close
-            </button>
-          </Dialog.Panel>
-        </div>
-      </Dialog>
-      )}
-
-      
+  <Dialog 
+    as="div" 
+    className="fixed inset-0 z-10 overflow-y-auto" 
+    open={fileModalOpen} 
+    onClose={() => setFileModalOpen(false)}
+  >
     
+    <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+      
+      {/* This element is to trick the browser into centering the modal contents. */}
+      <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+      
+      {/* We use margin and max-width for sm screens and above, and margin-auto for smaller screens */}
+      <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl lg:max-w-5xl xl:max-w-6xl w-full">
+        <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div className="sm:flex sm:items-start">
+            <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
+              {/* Close button */}
+            <div className="absolute top-0 right-0 pt-4 pr-4">
+              <button
+                onClick={() => setFileModalOpen(false)}
+                className="text-secondary hover:text-primary focus:outline-none"
+                aria-label="Close panel"
+              >
+                <span className="sr-only">Close panel</span>
+                ×
+              </button>
+            </div>
+              <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
+                Document Viewer
+              </Dialog.Title>
+              <div className="mt-2">
+                <p className="text-sm text-gray-500">
+                  Your document appears below.
+                </p>
+              </div>
+              {/* Adjust height based on screen size */}
+              <div className="mt-4 md:h-[60vh] lg:h-[70vh] xl:h-[80vh] overflow-auto">
+                <DocView
+                  documents={[{ uri: resource.filePath }]}
+                  // Additional props and styles can be added here
+                />
+              </div>
+            </div>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </Dialog>
+)}
+
     </div>
   );
 };
