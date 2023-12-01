@@ -5,6 +5,7 @@ export type FormData = {
     title: string;
     description?: string;
     tags?: string[];
+    file?: { name: string; path: string;}
     resourceType: ResourceType;
     userId: number;
   };

@@ -2,24 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import prisma from '@wasp/prisma';
 import TagsInput from './TagsInput';
-
-type PdfFormData = {
-  file: FileList;
-  title: string;
-  description?: string;
-};
+import generateSasToken from "@wasp/queries/generateSasToken";
+import { BlobServiceClient } from '@azure/storage-blob';
+import UploadedFileType from '../../common/types/UploadedFileType';
+import { FormData } from '../../common/types/FormType';
 
 type PdfFormInput = {
   mode: 'create' | 'edit';
   resource?: prisma.resource;
-  onSubmit: (data: PdfFormData) => void;
+  onSubmit: (data: FormData) => void;
 };
 
-const PdfForm: React.FC<PdfFormInput> = ({mode, resource, onSubmit}) => {
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<PdfFormData>();
-  const [selectedTags, setSelectedTags] = useState<string[]>([]); 
 
-    // Set default values for edit mode
+const PdfForm: React.FC<PdfFormInput> = ({mode, resource, onSubmit}) => {
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>();
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [azureSasToken, setAzureSasToken] = useState<string>('');
+
     useEffect(() => {
       if (mode === 'edit' && resource) {
         setValue('title', resource.title);
@@ -36,15 +35,45 @@ const PdfForm: React.FC<PdfFormInput> = ({mode, resource, onSubmit}) => {
       setValue('tags', selectedTags);
     };
     
-    const transformTags = (tags: prisma.resourcetotag) => {    
+    const transformTags = (tags: prisma.resourcetotag) => {
       return tags ? tags.map(tag => tag.tag.name) : [];
     };
 
+    const uploadFileToBlob = async (data) => {
+      if (!(data.file && data.file.length > 0)) {
+        return;
+      }
+    
+      const file = data.file[0];
+      const uploadedFile = await fileUpload(file, 'bookgpt');
+      onSubmit({...data, file: { filePath: uploadedFile.filePath, fileName: uploadedFile.fileName}});
+    };
+    
+    async function fileUpload(file: File, containerName: string): Promise<UploadedFileType> {
+
+      try {
+        let sasToken = await generateSasToken();
+        setAzureSasToken(sasToken.sasToken);
+        const blobServiceClient = new BlobServiceClient(`https://bookgpt.blob.core.windows.net/${containerName}?${sasToken.sasToken}`);
+        const containerClient = blobServiceClient.getContainerClient(containerName);
+        const blobClient = containerClient.getBlockBlobClient(file.name);
+        const options = { blobHTTPHeaders: { blobContentType: file.type } };
+        const response = await blobClient.uploadData(file, options);
+        
+        return {fileName: file.name, filePath: blobClient.url};
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+
+      return {fileName: '', filePath: ''};
+      
+    }
+
   return (
-    <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+    <form className="space-y-4" onSubmit={handleSubmit(uploadFileToBlob)}>
       <div>
         <label htmlFor="file" className="block text-sm font-medium text-gray-700">PDF File</label>
-        <input id="file" type="file" {...register('file', { required: true })} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
+        <input id="file" type="file" {...register('file', { required: mode === 'create'})} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
         {errors.file && <span className="text-red-500 text-xs">This field is required</span>}
       </div>
 

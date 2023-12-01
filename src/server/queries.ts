@@ -5,6 +5,11 @@ import type { GetBooks } from '@wasp/queries/types';
 import type { GetResources } from '@wasp/queries/types';
 import type { Book, Resource, Tag } from '@wasp/entities';
 import type { GetTags } from "@wasp/queries/types";
+import type { GenerateSasToken } from '@wasp/queries/types';
+import { StorageSharedKeyCredential, generateBlobSASQueryParameters, BlobSASPermissions } from '@azure/storage-blob';
+import moment from 'moment-timezone';
+
+process.env.TZ = 'Europe/Sofia';
 
 export const getRelatedObjects: GetRelatedObjects<void, RelatedObject[]> = async (args, context) => {
   if (!context.user) {
@@ -192,3 +197,29 @@ export const searchTags: GetTags<SearchTagsInput, SearchTagsOutput> = async ({pa
   return { tags };
 }
 
+type GenerateSasTokenInput = {
+  timezone: string;
+  locale: string;
+};
+
+type GenerateSasTokenOutput = {
+  sasToken: string;
+};
+
+export const generateSasToken: GenerateSasToken<GenerateSasTokenInput, GenerateSasTokenOutput> = async (): Promise<GenerateSasTokenOutput> => {
+
+  const containerName = process.env.AZURE_STORAGE_ACCOUNT_CONTAINER_NAME!;
+  const storageAccountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+  const storageAccountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY!;
+
+  const sharedKeyCredential = new StorageSharedKeyCredential(storageAccountName, storageAccountKey);
+
+  const sasToken = generateBlobSASQueryParameters({
+    containerName,
+    permissions: BlobSASPermissions.parse("rw"), // Adjust permissions as needed
+      startsOn: new Date(),
+      expiresOn: new Date(new Date().valueOf() + 60 * 60 * 48),
+  }, sharedKeyCredential).toString();
+
+  return { sasToken };
+};

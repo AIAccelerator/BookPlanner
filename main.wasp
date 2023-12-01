@@ -73,7 +73,9 @@ app book_planner {
     ("redux", "^4.0.5"),
     ("react-redux", "^7.1.3"),
     ("react-dropzone", "^14.2"),
-    ("multer", "^1.4")
+    ("multer", "^1.4"),
+    ("@azure/storage-blob", "12.17.0"),
+    ("moment-timezone", "0.5")
   ]
 }
 
@@ -294,6 +296,12 @@ page ResearchPage {
 
 route ResearchPageRoute { path: "/research", to: ResearchPage }
 
+page AzurePage {
+  component: import AzurePage from "@client/AzurePage",
+  authRequired: false
+}
+
+route AzurePageRoute { path: "/azure", to: AzurePage }
 
 // action stripeCreditsPayment {
 //   fn: import { stripeCreditsPayment } from "@server/actions.js",
@@ -325,6 +333,11 @@ query getResources {
 query getTags {
   fn: import { searchTags } from "@server/queries.js",
   entities: [Tag, ResourceToTag, User]
+}
+
+query generateSasToken {
+  fn: import { generateSasToken } from "@server/queries.js",
+  entities: [User]
 }
 /*
  * 📡 These are custom Wasp API Endpoints. Use them for callbacks, webhooks, etc.
